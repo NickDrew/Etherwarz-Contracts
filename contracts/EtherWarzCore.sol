@@ -1,6 +1,6 @@
 pragma solidity ^0.4.17;
 
-import 'contracts/EtherStrikeRoleManagement.sol';
+import 'contracts/EtherWarzRoleManagement.sol';
 import 'contracts/Tokens/ERC721.sol';
 import 'contracts/Auctions/Auction.sol';
 
@@ -8,10 +8,10 @@ import 'contracts/Auctions/Auction.sol';
 ///Many thanks to Axiom Zen (https://www.axiomzen.co) and the Loom Network (https://loomx.io/) for their excellent work 
 ///pushing the boundries of Blockchain DAP development and providing excellent tutorials and learning resources for new DAP developers.
 
-///@title Base contract for EtherStrike. Holds all common structs, events and base variables.
+///@title Base contract for EtherWarz. Holds all common structs, events and base variables.
 ///@author Streamvade
-///@dev See the EtherStrike contract documentation to understand how the various contract facets are linked and organised.
-contract SmartDroneBase is EtherStrikeRoleManagement {
+///@dev See the EtherWarz contract documentation to understand how the various contract facets are linked and organised.
+contract SmartDroneBase is EtherWarzRoleManagement {
     /*** EVENTS ***/
     
     /// @dev The Construct event is fired whenever a new Smart Drone comes into existence.
@@ -22,11 +22,17 @@ contract SmartDroneBase is EtherStrikeRoleManagement {
     event Transfer(address from, address to, uint256 tokenId);
 
     /*** DATA TYPES ***/
-    /// @dev The main Smart Drone struct. Every Smart Drone in EtherStrike is represented by a copy of this structure.
+    /// @dev The main Smart Drone struct. Every Smart Drone in EtherWarz is represented by a copy of this structure.
     struct SmartDrone {
         //The Smart Drones "AI" is stored in these 256-bits. The AI will change as the Smart Drone looses fights. Self-duplicating drones
         //create a duplicate with an exact copy of their own sourceAI.
-        uint256 sourceAI;
+        bytes32 sourceAI;
+        //The Smart Drones "AI" is stored in these 256-bits. The AI will change as the Smart Drone looses fights. Self-duplicating drones
+        //create a duplicate with an exact copy of their own sourceAI.
+        bytes32 oldSourceAI;
+        //The lineId of the Smart Drone defines is physical construction. This will be defined when a new Smart Drone 
+        //is constructed.
+        bytes32 lineId;
         // The timestamp from the block when this Smart Drone came into existence.
         uint64 birthTime;
         // The next timestamp a Smart Drone will be able to fight again.
@@ -35,9 +41,7 @@ contract SmartDroneBase is EtherStrikeRoleManagement {
         uint32 victories;
         //The total number of losses the Smart Drone has suffered.
         uint32 defeats;
-        //The lineId of the Smart Drone defines is physical construction. This will be defined when a new Smart Drone 
-        //is constructed.
-        uint32 lineId;
+        
     }
 
     /*** CONSTANTS ***/
@@ -100,8 +104,8 @@ contract SmartDroneBase is EtherStrikeRoleManagement {
     ///@param _lineId The physical construction line used to determin the SmartDrones physical charactersitics.
     ///@param _owner The initial owner of the drone, must be non-zero (except for the Construcion Line, ID 0)
     function _createDrone(
-        uint256 _sourceAI,
-        uint32 _lineId,
+        bytes32 _sourceAI,
+        bytes32 _lineId,
         address _owner
     )
         internal
@@ -111,9 +115,9 @@ contract SmartDroneBase is EtherStrikeRoleManagement {
         //sure that these conditions are never broken. However! _createDrone() is already
         // an expensive call (for storage), and it doesn't hurt to be especially careful
         // to ensure our data structures are always valid.
-        require(_lineId == uint256(uint32(_lineId)));
+        require(_lineId == bytes32(_lineId));
 
-        SmartDrone memory _smartDrone = SmartDrone({sourceAI:_sourceAI, birthTime:uint64(now),cooldownEndBlock:0,victories:0,defeats:0,lineId:_lineId});
+        SmartDrone memory _smartDrone = SmartDrone({sourceAI:_sourceAI,oldSourceAI:_sourceAI, birthTime:uint64(now),cooldownEndBlock:0,victories:0,defeats:0,lineId:_lineId});
         uint256 newDroneID = smartDrones.push(_smartDrone) - 1;
         //Just check to ensure we haven't created more than 4 billion drones!
         require(newDroneID == uint256(uint32(newDroneID)));
@@ -167,8 +171,8 @@ contract AIScienceInterface {
         return true;
     }
 
-    function generateNew() public pure returns (uint256) {
-       uint256 generatedAiSource = 0;
+    function generateNew() public pure returns (bytes32) {
+       bytes32 generatedAiSource = "0";
        
        return generatedAiSource; 
     }
@@ -176,7 +180,7 @@ contract AIScienceInterface {
 
 ///@title Manages Drone ownership. Compliant with the draft version of ERC-721.
 ///@author Streamvade
-///@dev See the EtherStrikeCore documentation to understand how the various contract facets are arranged.
+///@dev See the EtherWarzCore documentation to understand how the various contract facets are arranged.
 contract SmartDroneOwnership is SmartDroneBase, ERC721 {
     
     ///@notice Name and symbol of the non fungible token, as defined in ERC721
@@ -389,7 +393,7 @@ contract SmartDroneOwnership is SmartDroneBase, ERC721 {
     }
 }
 
-///@title A facet of EtherStrikeCore that manages Drone Manufacturing
+///@title A facet of EtherWarzCore that manages Drone Manufacturing
 contract SmartDroneManufacturing is SmartDroneOwnership {
 
     ///@dev The address of the sibling contract that is used to initiate a new sourceAI
@@ -408,9 +412,9 @@ contract SmartDroneManufacturing is SmartDroneOwnership {
         aIScience = candidateContract; 
     }
 
-    function constructDrone(uint32 _lineId) external whenNotPaused returns(uint256) {
+    function constructDrone(bytes32 _lineId) external whenNotPaused returns(uint256) {
         //Call the AI generation operation
-        uint256 newAISource = aIScience.generateNew();
+        bytes32 newAISource = aIScience.generateNew();
 
         // Make the new drone!
         address owner = tokManagerAddress;
@@ -463,7 +467,7 @@ contract SmartDroneMinting is SmartDroneAuction {
     /// @param _sourceAI the seed value for the Drones simple AI
     /// @param _lineId the physical structure of the Drone to be created, any value is accepted
     /// @param _owner the future owner of the created Drone. Default to contract Token Manager
-    function createPromoDrone(uint256 _sourceAI, uint32 _lineId, address _owner) external onlyTokManager {
+    function createPromoDrone(bytes32 _sourceAI, bytes32 _lineId, address _owner) external onlyTokManager {
         address droneOwner = _owner;
         if(droneOwner == address(0)){
             droneOwner = tokManagerAddress;
@@ -473,7 +477,7 @@ contract SmartDroneMinting is SmartDroneAuction {
 
     ///@dev Creates a new SmartDrone with the given AI/Line combo and
     ///creates an auction for it
-    function createSmartDroneAuction(uint256 _sourceAI, uint32 _lineId) external onlyTokManager {
+    function createSmartDroneAuction(bytes32 _sourceAI, bytes32 _lineId) external onlyTokManager {
 
         uint256 droneId = _createDrone(_sourceAI,_lineId,address(this));
         _approve(droneId, saleAuction);
@@ -498,17 +502,17 @@ contract SmartDroneMinting is SmartDroneAuction {
     }
 }
 
-//@title EtherStrike: Combat between Smart Drones that learn from their losses, on the Ethereum blockchain.
+//@title EtherWarz: Combat between Smart Drones that learn from their losses, on the Ethereum blockchain.
 ///@author StreamVade
-///@dev The main EtherStrike contract, keeps tracks of drones to prevent rogue AI armageddon.
+///@dev The main EtherWarz contract, keeps tracks of drones to prevent rogue AI armageddon.
 contract SmartDroneCore is SmartDroneMinting {
-    //This is the main EtherStrike contract and the endpoint of the core inheritence. It works in parallel to the SourceAI, Combat and Auction
-    //contract collections to create the Blockchain portion of the EtherStrike game.
+    //This is the main EtherWarz contract and the endpoint of the core inheritence. It works in parallel to the SourceAI, Combat and Auction
+    //contract collections to create the Blockchain portion of the EtherWarz game.
 
     //Set in case the core contract is broken and an upgrade is required
     address public newContractAddress;
 
-    ///@notice Creates the main EtherStrike smart contract instance.
+    ///@notice Creates the main EtherWarz smart contract instance.
     function SmartDroneCore() public {
         //Starts paused.
         paused = true;
@@ -527,7 +531,7 @@ contract SmartDroneCore is SmartDroneMinting {
     /// be paused indefinitely if such an upgrade takes place.)
     function setNewAddress(address _v2Address) external onlyConManager whenPaused {
         // See README.md for upgrade plan
-        newContractaddress = _v2Address;
+        newContractAddress = _v2Address;
         ContractUpgrade(_v2Address);
     }
 
@@ -568,6 +572,6 @@ contract SmartDroneCore is SmartDroneMinting {
 
     // @dev Allows the Ethereum manager to capture the balance available to the contract.
     function withdrawBalance() external onlyEthManager {
-        cfoAddress.send(this.balance;);
+        ethManagerAddress.send(this.balance);
     }
 }

@@ -4,16 +4,16 @@ pragma solidity ^0.4.17;
 ///Many thanks to Axiom Zen (https://www.axiomzen.co) and the Loom Network (https://loomx.io/) for their excellent work 
 ///both pushing the boundries of Blockchain DAP development and providing excellent tutorials and learning resources.
 
-/// @title Role management contract for EtherStrike
+/// @title Role management contract for EtherWarz
 /// @author StreamVade
-/// @dev see the EtherStrikeCore contract documentation to understand exactly how this is used.
-contract EtherStrikeRoleManagement {
+/// @dev see the EtherWarzCore contract documentation to understand exactly how this is used.
+contract EtherWarzRoleManagement {
 
-    //This contract manages roles that have access to make changes to EtherStrike contracts.
+    //This contract manages roles that have access to make changes to EtherWarz contracts.
     //SecurityManager:  The Security Manager can reassign roles, alter this contract and unpause the smart contract. 
-    //                  It is initially set to the address that created the smart contract in the EtherStrikeCore constructor.
-    //ContractManager:  The Contract Manager can update core EtherStrike contract facets.
-    //EtherManager:     The Ethereum Manager can withdraw funds from EtherStrikeCore and its sub-contracts.
+    //                  It is initially set to the address that created the smart contract in the EtherWarzCore constructor.
+    //ContractManager:  The Contract Manager can update core EtherWarz contract facets.
+    //EtherManager:     The Ethereum Manager can withdraw funds from EtherWarzCore and its sub-contracts.
     //TokenManager:     The Token Manager can mint new SmartDrone tokens.
 
     ///@dev Emited when contract is upgraded.
