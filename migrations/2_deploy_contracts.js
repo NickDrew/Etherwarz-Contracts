@@ -18,37 +18,38 @@ var SmartDroneOwnership = artifacts.require("SmartDroneOwnership");
 
 module.exports = function(deployer) {
   deployer.deploy(Ownable);
-  deployer.link(Ownable, Killable);
+  deployer.link(Ownable, [Killable,ClockAuction]);
   deployer.deploy(Killable);
   deployer.link(Killable, Authentication);
   deployer.deploy(Authentication);
-  deployer.link(Ownable,Pausable);
+  deployer.link(Ownable,[ClockAuction,SaleClockAuction,ClockAuction,Pausable]);
   deployer.deploy(Pausable);
+  deployer.link(Pausable,ClockAuction);
   deployer.deploy(ERC721);
+  deployer.link(ERC721,ClockAuction);
   deployer.deploy(EtherWarzRoleManagement);
 
-  deployer.link(SmartDroneBase,EtherWarzRoleManagement);
-  deployer.deploy(EtherWarzRoleManagement);
-  deployer.deploy(ERC721Metadata);
-  deployer.deploy(AIScienceInterface);
-  deployer.link(SmartDroneBase,SmartDroneOwnership);
-  deployer.link(ERC721, SmartDroneOwnership).then (function() {
-    deployer.deploy(SmartDroneOwnership).then (function() {
+  deployer.link(EtherWarzRoleManagement,[SmartDroneMinting,SmartDroneCore,SmartDroneAuction,SmartDroneManufacturing,SmartDroneOwnership,SmartDroneBase]);
+  deployer.deploy(SmartDroneBase);
+    deployer.deploy(ERC721Metadata);
+    deployer.deploy(AIScienceInterface);
+    deployer.link(SmartDroneBase,[SmartDroneMinting,SmartDroneCore,SmartDroneAuction,SmartDroneManufacturing,SmartDroneOwnership]);
+    deployer.link(ERC721, [SmartDroneMinting,SmartDroneCore,SmartDroneAuction,SmartDroneManufacturing,SmartDroneOwnership,ClockAuctionBase,ClockAuction]);
+    deployer.deploy(SmartDroneOwnership)
       deployer.deploy(ClockAuctionBase);
-      deployer.link(Pausable,ClockAuction);
-      deployer.link(ClockAuctionBase,ClockAuction);
+      deployer.link(Pausable,[ClockAuction,SaleClockAuction,ClockAuction]);
+      deployer.link(ClockAuctionBase,[ClockAuction,SaleClockAuction]);
       deployer.deploy(ClockAuction,SmartDroneOwnership.address,9000);
       deployer.link(ClockAuction,SaleClockAuction);
-      deployer.deploy(SaleClockAuction);
-    });
-  });
-  
-  deployer.link(SmartDroneOwnership,SmartDroneManufacturing);
-  deployer.deploy(SmartDroneManufacturing);
-  deployer.link(SmartDroneManufacturing,SmartDroneAuction);
-  deployer.deploy(SmartDroneAuction);
-  deployer.link(SmartDroneAuction,SmartDroneMinting);
-  deployer.deploy(SmartDroneMinting);
-  deployer.link(SmartDroneMinting,SmartDroneCore);
-  deployer.deploy(SmartDroneCore);
+      deployer.deploy(SaleClockAuction,SmartDroneOwnership.address,9000);
+      deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneAuction,SmartDroneManufacturing]);
+      deployer.link(AIScienceInterface, SmartDroneManufacturing);
+      deployer.deploy(SmartDroneManufacturing);
+      deployer.link(SmartDroneManufacturing,[SmartDroneMinting,SmartDroneCore,SmartDroneAuction]);
+      deployer.deploy(SmartDroneAuction);
+      deployer.link(SmartDroneAuction,[SmartDroneMinting,SmartDroneCore]);
+      deployer.deploy(SmartDroneMinting);
+      deployer.link(SmartDroneMinting,SmartDroneCore);
+      deployer.deploy(SmartDroneCore);
+
 };
