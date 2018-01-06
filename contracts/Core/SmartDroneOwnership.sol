@@ -126,7 +126,7 @@ contract SmartDroneOwnership is SmartDroneBase, ERC721 {
     ///@notice Returns the total number of Smart Drones currently in existence.
     /// @dev Required for ERC-721 compliance.
     function totalSupply() public view returns(uint) {
-        return smartDrones.length - 1;
+        return smartDrones.length;
     }
     
     ///@notice Returns the address currently assigned ownership of a given Drone.

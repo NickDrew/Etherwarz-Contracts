@@ -66,15 +66,15 @@ contract SmartDroneBase is EtherWarzRoleManagement {
     ///@dev A mapping from DroneIDs to an address that has been approved to call
     /// transferFrom(). Each Drone can only have one approved address for transfer
     /// at any time. A zero value means no approval is outstanding.
-    mapping (uint256 => address) public droneIndexToApproved;
+    mapping(uint256 => address) public droneIndexToApproved;
 
     ///@dev A mapping from DroneIDs to an address that has been approved to use
     /// this Drone for fighting via fightWith(). Each drone can only have one approved
     /// address for fighting at any time. A zero value means no approval is outstanding.
-    mapping (uint256 => address) public fightAllowedToAddress;
+    mapping(uint256 => address) public fightAllowedToAddress;
 
     ///@dev The address of the ClockAuction contract that handles sales of Drones. This
-    /// same contract handles both peer-to-peer sales as well as the gen0 sales which are 
+    /// same contract handles both peer-to-peer sales as well as the construction line sales which are 
     /// initiated every 15 minutes.
     SaleClockAuction public saleAuction;
 

@@ -24,7 +24,7 @@ contract ClockAuction is Pausable, ClockAuctionBase {
         ownerCut = _cut;
 
         ERC721 candidateContract = ERC721(_nftAddress);
-        require(candidateContract.supportsInterface(InterfaceSignature_ERC721));
+        //require(candidateContract.supportsInterface(InterfaceSignature_ERC721));
         nonFungibleContract = candidateContract;
     }
 

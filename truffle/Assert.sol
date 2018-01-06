@@ -1127,7 +1127,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function lengthNotEqual(address[] arr, uint length, string message) constant returns (bool result) {
         uint arrLength = arr.length;
         if (arrLength != arr.length)
@@ -1188,7 +1188,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function notEqual(bytes32[] arrA, bytes32[] arrB, string message) constant returns (bool result) {
         var r = arrA.length == arrB.length;
         if (r) {
@@ -1216,7 +1216,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function lengthEqual(bytes32[] arr, uint length, string message) constant returns (bool result) {
         uint arrLength = arr.length;
         if (arrLength == length)
@@ -1239,7 +1239,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function lengthNotEqual(bytes32[] arr, uint length, string message) constant returns (bool result) {
         uint arrLength = arr.length;
         if (arrLength != arr.length)
@@ -1264,7 +1264,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function balanceEqual(address A, uint b, string message) constant returns (bool result) {
         result = (A.balance == b);
         _report(result, message);
@@ -1284,7 +1284,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function balanceNotEqual(address A, uint b, string message) constant returns (bool result) {
         result = (A.balance != b);
         _report(result, message);
@@ -1303,7 +1303,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function balanceIsZero(address A, string message) constant returns (bool result) {
         result = (A.balance == 0);
         _report(result, message);
@@ -1322,7 +1322,7 @@ library Assert {
 
         Returns:
             result (bool) - The result.
-    */
+    
     function balanceIsNotZero(address A, string message) constant returns (bool result) {
         result = (A.balance != 0);
         _report(result, message);

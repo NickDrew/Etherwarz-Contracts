@@ -3,14 +3,14 @@ pragma solidity ^0.4.17;
 
 import 'contracts/Tokens/ERC721.sol';
 import 'contracts/Auctions/SaleClockAuction.sol';
-import 'contracts/Core/SmartDroneMinting.sol';
+import 'contracts/Core/SmartDroneWar.sol';
 import 'contracts/RoleManagement/EtherWarzRoleManagement.sol';
 
 
 //@title EtherWarz: Combat between Smart Drones that learn from their losses, on the Ethereum blockchain.
 ///@author StreamVade
 ///@dev The main EtherWarz contract, keeps tracks of drones to prevent rogue AI armageddon.
-contract SmartDroneCore is SmartDroneMinting {
+contract SmartDroneCore is SmartDroneWar {
     //This is the main EtherWarz contract and the endpoint of the core inheritence. It works in parallel to the SourceAI, Combat and Auction
     //contract collections to create the Blockchain portion of the EtherWarz game.
 

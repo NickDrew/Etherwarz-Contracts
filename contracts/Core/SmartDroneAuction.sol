@@ -19,7 +19,7 @@ contract SmartDroneAuction is SmartDroneManufacturing {
     }
 
     // @dev Put a Drone up for auction
-    function createSaleAUction(uint256 _droneId, uint256 _startingPrice, uint256 _endingPrice, uint256 _duration) external whenNotPaused {
+    function createSaleAuction(uint256 _droneId, uint256 _startingPrice, uint256 _endingPrice, uint256 _duration) external whenNotPaused {
         // Auction contract checks input sizes
         // If drone is already on any auction, this will throw
         // because it will be owned by the action contract.
