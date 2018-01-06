@@ -18,3 +18,4 @@ build/contracts/SmartDroneManufacturing.json
 build/contracts/SmartDroneMinting.json
 build/contracts/SmartDroneOwnership.json
 build/contracts/SmartDroneWar.json
+build/contracts
