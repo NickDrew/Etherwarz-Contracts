@@ -17,7 +17,13 @@ class App extends Component {
     const OnlyAuthLinks = VisibleOnlyAuth(() =>
       <span>
         <li className="pure-menu-item">
-          <Link to="/dashboard" className="pure-menu-link">Dashboard</Link>
+        <Link to="/shop" className="pure-menu-link">Shop</Link>
+        </li>
+        <li className="pure-menu-item">
+        <Link to="/hangar" className="pure-menu-link">Hangar</Link>
+        </li>
+        <li className="pure-menu-item">
+          <Link to="/war" className="pure-menu-link">WAR!</Link>
         </li>
         <li className="pure-menu-item">
           <Link to="/profile" className="pure-menu-link">Profile</Link>
@@ -42,7 +48,7 @@ class App extends Component {
             <OnlyGuestLinks />
             <OnlyAuthLinks />
           </ul>
-          <Link to="/" className="pure-menu-heading pure-menu-link">Truffle Box</Link>
+          <Link to="/" className="pure-menu-heading pure-menu-link">EtherWarz</Link>
         </nav>
 
         {this.props.children}
