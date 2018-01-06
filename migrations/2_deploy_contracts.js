@@ -56,7 +56,6 @@ module.exports = function(deployer) {
     deployer.deploy(SmartDroneWar);
     deployer.link(SmartDroneWar,SmartDroneCore);
     deployer.deploy(SmartDroneCore);
-
   });
         
       
