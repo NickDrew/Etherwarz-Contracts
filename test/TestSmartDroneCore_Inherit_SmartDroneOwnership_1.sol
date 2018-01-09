@@ -23,7 +23,7 @@ contract TestSmartDroneCore_Inherit_SmartDroneOwnership_1 {
   }
 
   function testInheritence_SmartDroneOwnership_balanceOf() {
-    smartDroneCore.createPromoDrone(bytes32('a'),bytes32('b'),this);
+    smartDroneCore.createPromoDrone(uint64(1),uint128(1),this);
     Assert.equal(smartDroneCore.balanceOf(this), 1, "It should be 1");
   }
 

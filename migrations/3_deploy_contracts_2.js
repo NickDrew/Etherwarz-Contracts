@@ -17,6 +17,7 @@ var SmartDroneManufacturing = artifacts.require("SmartDroneManufacturing");
 var SmartDroneMinting = artifacts.require("SmartDroneMinting");
 var SmartDroneOwnership = artifacts.require("SmartDroneOwnership");
 var SmartDroneWar = artifacts.require("SmartDroneWar");
+var AIScience = artifacts.require("AIScience");
 
 module.exports = function(deployer) {
   
@@ -30,11 +31,13 @@ module.exports = function(deployer) {
     deployer.link(ClockAuction,SaleClockAuction);
     deployer.deploy(SaleClockAuction,SmartDroneOwnership.address,9000);
     deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction,SmartDroneManufacturing]);
-    deployer.link(AIScienceInterface, SmartDroneManufacturing);
+    deployer.link(AIScienceInterface, [SmartDroneManufacturing,AIScience]);
     deployer.deploy(SmartDroneManufacturing);
     deployer.link(SmartDroneManufacturing,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
     deployer.deploy(SmartDroneAuction);
     deployer.link(SmartDroneAuction,[SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
+    deployer.deploy(AIScience);
+    deployer.link(AIScience,SmartDroneManufacturing);
     deployer.deploy(SmartDroneMinting);
     deployer.link(SmartDroneMinting,[SmartDroneWar,SmartDroneCore]);
     deployer.deploy(SmartDroneWar);

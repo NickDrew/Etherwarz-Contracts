@@ -14,7 +14,7 @@ contract SmartDroneBase is EtherWarzRoleManagement {
     /*** EVENTS ***/
     
     /// @dev The Construct event is fired whenever a new Smart Drone comes into existence.
-    event Construct(address owner, uint256 droneId, uint256 lineId, uint256 sourceAI);
+    event Construct(address owner, uint256 droneId, uint128 lineId, uint64 sourceAI);
 
     /// @dev Transfer event as defined in current draft of ERC721. Emitted every time a Smart Drones
     /// ownership is assigned, including self-duplication.
@@ -25,13 +25,13 @@ contract SmartDroneBase is EtherWarzRoleManagement {
     struct SmartDrone {
         //The Smart Drones "AI" is stored in these 256-bits. The AI will change as the Smart Drone looses fights. Self-duplicating drones
         //create a duplicate with an exact copy of their own sourceAI.
-        bytes32 sourceAI;
+        uint64 sourceAI;
         //The Smart Drones "AI" is stored in these 256-bits. The AI will change as the Smart Drone looses fights. Self-duplicating drones
         //create a duplicate with an exact copy of their own sourceAI.
-        bytes32 oldSourceAI;
+        uint64 oldSourceAI;
         //The lineId of the Smart Drone defines is physical construction. This will be defined when a new Smart Drone 
         //is constructed.
-        bytes32 lineId;
+        uint128 lineId;
         // The timestamp from the block when this Smart Drone came into existence.
         uint64 birthTime;
         // The next timestamp a Smart Drone will be able to fight again.
@@ -103,8 +103,8 @@ contract SmartDroneBase is EtherWarzRoleManagement {
     ///@param _lineId The physical construction line used to determin the SmartDrones physical charactersitics.
     ///@param _owner The initial owner of the drone, must be non-zero (except for the Construcion Line, ID 0)
     function _createDrone(
-        bytes32 _sourceAI,
-        bytes32 _lineId,
+        uint64 _sourceAI,
+        uint128 _lineId,
         address _owner
     )
         internal
@@ -114,7 +114,7 @@ contract SmartDroneBase is EtherWarzRoleManagement {
         //sure that these conditions are never broken. However! _createDrone() is already
         // an expensive call (for storage), and it doesn't hurt to be especially careful
         // to ensure our data structures are always valid.
-        require(_lineId == bytes32(_lineId));
+        require(_lineId == uint128(_lineId));
 
         SmartDrone memory _smartDrone = SmartDrone({sourceAI:_sourceAI,oldSourceAI:_sourceAI, birthTime:uint64(now),cooldownEndBlock:0,victories:0,defeats:0,lineId:_lineId});
         uint256 newDroneID = smartDrones.push(_smartDrone) - 1;
@@ -124,8 +124,8 @@ contract SmartDroneBase is EtherWarzRoleManagement {
         Construct(
             _owner,
             newDroneID,
-            uint256(_smartDrone.lineId),
-            uint256(_smartDrone.sourceAI)
+            uint128(_smartDrone.lineId),
+            uint64(_smartDrone.sourceAI)
         );
 
         //This will assign ownership, and also emit the Transfer event as
