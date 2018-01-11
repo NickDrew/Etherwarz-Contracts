@@ -28,8 +28,6 @@ export function LiveAuctions() {
         
         smartDroneCore.deployed().then(function(instance){
             smartDroneCoreInstance = instance
-
-
         })
 
       })
