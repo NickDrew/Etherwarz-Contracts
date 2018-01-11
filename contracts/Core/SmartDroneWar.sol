@@ -13,7 +13,24 @@ import 'contracts/War/WarInterface.sol';
 ///@dev Interface content to come later.
 contract SmartDroneWar is SmartDroneMinting {
 
-    ///@dev The address of the sibling contract that is used to initiate a new sourceAI
+
+     ///@dev The address of the sibling contract that is used to control AI
+    AIScienceInterface public aIScience;
+
+    ///@dev Update the address of the aIScience contract. Can only be called by the Contract Manager.
+    ///@param _address An address of a aIScience contract instance to be used from this point forward.
+    function setaIScienceAddress(address _address) external onlyConManager {
+
+        AIScienceInterface candidateContract = AIScienceInterface(_address);
+
+        // NOTE: verify that a contract is what we expect
+        require(candidateContract.isAIScience());
+
+        // Set the new contract address
+        aIScience = candidateContract; 
+    }
+
+    ///@dev The address of the sibling contract that is used to initiate a battles
     WarInterface public warInterface;
 
     ///@dev Update the address of the aIScience contract. Can only be called by the Contract Manager.

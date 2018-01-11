@@ -14,8 +14,10 @@ contract TestSmartDroneCore_Inherit_SmartDroneManufacturing {
 
   SmartDroneCore smartDroneCore;
 
-  function testInheritence_SmartDroneManufacturing_setaIScienceAddress() {
-    smartDroneCore = new SmartDroneCore();
+ 
+
+  function testInheritence_SmartDroneManufacturing_constructDrone() {
+     smartDroneCore = new SmartDroneCore();
     smartDroneCore.setConManager(this);
     SaleClockAuction saleClockAuction = new SaleClockAuction(smartDroneCore,9000);
     AIScienceInterface aIScienceInterface = new AIScienceInterface();
@@ -23,19 +25,9 @@ contract TestSmartDroneCore_Inherit_SmartDroneManufacturing {
     smartDroneCore.setaIScienceAddress(aIScienceInterface);
     smartDroneCore.unpause();
 
-  /*
-    address bob = 0x627306090abaB3A6e1400e9345bC60c78a8BEf57;
-    smartDroneCore.createPromoDrone(bytes32('a'),bytes32('b'),this);
-
-    smartDroneCore.transfer(bob, 0);
-*/
-    Assert.equal(smartDroneCore.aIScience(),aIScienceInterface, "It should be the same address");
-
-  }
-
-  function testInheritence_SmartDroneManufacturing_constructDrone() {
-    bytes32 newLineId = bytes32(1234);
-    uint256 newDroneId = smartDroneCore.constructDrone(newLineId);
+    uint128 newLineId = uint128(1234);
+    uint64 newAI = uint64(1234);
+    uint256 newDroneId = smartDroneCore.constructDrone(newLineId,newAI);
 
     Assert.equal(smartDroneCore.ownerOf(newDroneId),this, "It should be the same");
 

@@ -7,9 +7,5 @@ contract AIScienceInterface {
         return true;
     }
 
-    function generateNew() public pure returns (bytes32) {
-       bytes32 generatedAiSource = "0";
-       
-       return generatedAiSource; 
-    }
+    
 }
