@@ -50,15 +50,15 @@ contract SmartDroneCore is SmartDroneWar {
 
     /// @notice Returns all the relevant information about a specific Smart Drone.
     /// @param _id The ID of the Drone of interest.
-    function getDrone(uint256 _id) external view returns (uint256 sourceAI, uint256 birthTime, uint256 cooldownEndBlock, uint256 victories, uint256 defeats, uint256 lineId)
+    function getDrone(uint256 _id) external view returns (uint64 sourceAI, uint256 birthTime, uint256 cooldownEndBlock, uint256 victories, uint256 defeats, uint128 lineId)
     {
         SmartDrone storage drone = smartDrones[_id];
-        sourceAI = uint256(drone.sourceAI);
+        sourceAI = uint64(drone.sourceAI);
         birthTime = uint256(drone.birthTime);
         cooldownEndBlock = uint256(drone.cooldownEndBlock);
         victories = uint256(drone.victories);
         defeats = uint256(drone.defeats);
-        lineId = uint256(drone.lineId);
+        lineId = uint128(drone.lineId);
     }
 
     //@dev Override unpause so it requires all external contract addresses
@@ -68,7 +68,6 @@ contract SmartDroneCore is SmartDroneWar {
     /// without using an expensive CALL.
     function unpause() public onlySecManager whenPaused {
         require(saleAuction != address(0));
-        require(aIScience != address(0));
         require(newContractAddress == address(0));
 
         //Actually unpause the contract.
