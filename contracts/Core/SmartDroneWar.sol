@@ -45,4 +45,6 @@ contract SmartDroneWar is SmartDroneMinting {
         // Set the new contract address
         warInterface = candidateContract; 
     }
+
+    
 }
