@@ -5,7 +5,7 @@ import "contracts/War/WarInterface.sol";
 /// @title No, you don't get to see this :P
 contract WarResolution is WarInterface {
     
-    function War(uint64 _p1AI, uint128 _p1Line, uint64 _p2AI, uint128 _p2Line, uint32 _enviroment) external returns(uint16 winner, uint16 primeAtt) {
+    function War(uint64 _p1AI, uint128 _p1Line, uint64 _p2AI, uint128 _p2Line, uint32 _enviroment) external returns(uint8 winner, uint16 primeAtt) {
        
         if(scoreCalc(_p1AI,_p1Line,_enviroment) > scoreCalc(_p2AI,_p2Line,_enviroment))
         {

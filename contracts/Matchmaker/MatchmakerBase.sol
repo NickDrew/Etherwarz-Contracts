@@ -1,7 +1,6 @@
 pragma solidity ^0.4.17;
 
 import 'contracts/zeppelin/ownership/Ownable.sol';
-import 'contracts/Core/SmartDroneWar.sol';
 import 'contracts/Tokens/ERC721Match.sol';
 
 /// @title Matchmaker Core
@@ -26,9 +25,12 @@ contract MatchmakerBase{
     // Reference to contract tracking NFT ownership
     ERC721Match public matchableNonFungibleContract;
 
-    // Cut winner takes on a match, measured in basis points (1/100 of a percent).
+    // Cut runner takes on a match, measured in basis points (1/100 of a percent).
     // Values 0-10,000 map to 0%-100%
-    uint256 public winnerCut;
+    uint256 public runnersCut;
+
+    // The amount held in escrow for payout to match winners.
+    uint256 internal escrowAmount;
 
     // Map from Makers token ID to their corresponding match.
     mapping (uint256=> Match) tokenIdtoMatch;
@@ -56,7 +58,7 @@ contract MatchmakerBase{
 
     }
 
-    function _takeMatch(uint256 _makerTokenId, uint256 _takerTokenId, uint256 _cashAmount) internal returns (uint256)
+    function _takeMatch(uint256 _makerTokenId, uint256 _takerTokenId, uint256 _cashAmount) internal
     {
         Match storage _match = tokenIdtoMatch[_makerTokenId];
 
@@ -88,7 +90,7 @@ contract MatchmakerBase{
             MatchTaken(_makerTokenId, winnerCash, _takerTokenId, _makerTokenId);
         }
         
-        return winnerCash;
+        
     }
 
     function _cancelMatch(uint256 _tokenId) internal {
@@ -108,6 +110,6 @@ contract MatchmakerBase{
     
    /// @dev Computes winners's cut of a match.
     function _computeCut(uint256 _matchCash) internal view returns (uint256) {
-        return _matchCash * winnerCut / 10000;
+        return _matchCash * runnersCut / 10000;
     }
 }
