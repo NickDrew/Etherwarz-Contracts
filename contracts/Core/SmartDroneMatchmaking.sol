@@ -8,7 +8,7 @@ import 'contracts/Core/SmartDroneWar.sol';
 
 //@title SmartDroneMatchmaker handles Drone interactions with matchmaking
 ///@author StreamVade
-contract SmartDroneMatchmaking is SmartDroneWar {
+contract SmartDroneMatchMaking is SmartDroneWar {
 
 
      ///@dev The address of the sibling contract that is used to control AI
