@@ -1,13 +1,13 @@
 pragma solidity ^0.4.17;
 
-import 'contracts/Tokens/ERC721.sol';
+import 'contracts/Tokens/ERC721Match.sol';
 import 'contracts/Core/SmartDroneBase.sol';
 import 'contracts/Tokens/ERC721Metadata.sol';
 
 ///@title Manages Drone ownership. Compliant with the draft version of ERC-721.
 ///@author Streamvade
 ///@dev See the EtherWarzCore documentation to understand how the various contract facets are arranged.
-contract SmartDroneOwnership is SmartDroneBase, ERC721 {
+contract SmartDroneOwnership is SmartDroneBase, ERC721Match {
     
     ///@notice Name and symbol of the non fungible token, as defined in ERC721
     string public constant name = "SmartDrones";
