@@ -2,7 +2,7 @@ pragma solidity ^0.4.17;
 
 import 'contracts/Auctions/ClockAuction.sol';
 
-///@title CLock auction modified for sale of drones
+///@title Clock auction modified for sale of drones
 ///@notice We omit a fallback function to prevent accidental sends to this contract
 contract SaleClockAuction is ClockAuction {
     // @dev Sanity check that allows us to ensure that we are pointing to the
