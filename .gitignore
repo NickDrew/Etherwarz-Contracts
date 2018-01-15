@@ -20,3 +20,4 @@ build/contracts/SmartDroneOwnership.json
 build/contracts/SmartDroneWar.json
 build/contracts
 build
+/node_modules/.cache/babel-loader

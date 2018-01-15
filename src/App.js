@@ -8,9 +8,11 @@ import LogoutButtonContainer from './user/ui/logoutbutton/LogoutButtonContainer'
 
 // Styles
 import './css/oswald.css'
+import './css/bot.css'
 import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
+
 
 class App extends Component {
   render() {

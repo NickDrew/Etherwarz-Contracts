@@ -16,7 +16,10 @@ class Shop extends Component {
         <div className="pure-g">
           <div className="pure-u-1-1">
             <h1>Shop</h1>
-            <p>Welcome to the Shop</p>
+            <div className="botCard">
+            <div className="botCardTitle">Tiger Tank</div>
+              <img className="botImg" src="http://www.mybligr.com/wp-content/uploads/2017/01/most-beautiful-tiger-animals-pics-images-photos-pictures-7-300x300.jpg"/>
+              </div>
           </div>
         </div>
       </main>
