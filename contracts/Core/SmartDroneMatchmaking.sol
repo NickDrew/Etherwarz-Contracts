@@ -16,7 +16,7 @@ contract SmartDroneMatchMaking is SmartDroneWar {
 
     ///@dev Update the address of the aMAtchMaker contract. Can only be called by the Contract Manager.
     ///@param _address An address of a aIScience contract instance to be used from this point forward.
-    function setMatchMaker(address _address) external onlyConManager {
+    function setMatchmakerAddress(address _address) external onlyConManager {
 
         MatchMaker candidateContract = MatchMaker(_address);
 

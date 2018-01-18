@@ -68,6 +68,9 @@ contract SmartDroneCore is SmartDroneMatchMaking {
     /// without using an expensive CALL.
     function unpause() public onlySecManager whenPaused {
         require(saleAuction != address(0));
+        require(matchMaker != address(0));
+        require(aIScience != address(0));
+        require(warResolution != address(0));
         require(newContractAddress == address(0));
 
         //Actually unpause the contract.
