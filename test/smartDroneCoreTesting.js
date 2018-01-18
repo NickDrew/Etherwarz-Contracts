@@ -39,26 +39,30 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
-  it("...should set the Auction contract.", function() {
+ /* it("...should set the Auction contract.", function() {
     return SmartDroneCore.deployed().then(function(instance) {
       coreInstance = instance;
-      auctionInstance = SaleClockAuction.deployed();
-      coreInstance.setSaleAuctionAddress(auctionInstance,{from: accounts[2]}).then(function(){
-        return coreInstance.saleAuction.call().then(function(contra){
-          assert.equal(contra,auctionInstance, "Auction contract not set");
-        });  
+       return SaleClockAuction.deployed().then(function(insta){
+        saleInst = insta;
+         coreInstance.setMatchmakerAddress(saleInst.address,{from: accounts[2]}).then(function(){
+          return coreInstance.matchMaker.call().then(function(contra){
+            assert.equal(contra,saleInst.address, "Matchmaking contract not set");
+          });  
+        });
       });
     });
-  });
+  });*/
 
   it("...should set the AI Science contract.", function() {
     return SmartDroneCore.deployed().then(function(instance) {
       coreInstance = instance;
-      aIScienceInstance = AIScience.deployed();
-      coreInstance.setaIScienceAddress(aIScienceInstance,{from: accounts[2]}).then(function(){
-        return coreInstance.aIScience.call().then(function(contra){
-          assert.equal(contra,aIScienceInstance, "AI Science contract not set");
-        });  
+       return Matchmaker.deployed().then(function(inst){
+        aIScienceInstance = inst;
+         coreInstance.setMatchmakerAddress(aIScienceInstance.address,{from: accounts[2]}).then(function(){
+          return coreInstance.matchMaker.call().then(function(contra){
+            assert.equal(contra,aIScienceInstance.address, "AI Science contract not set");
+          });  
+        });
       });
     });
   });
@@ -78,16 +82,27 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Matchmaking contract.", function() {
     return SmartDroneCore.deployed().then(function(instance) {
       coreInstance = instance;
-      matchMakerInstance = Matchmaker.deployed();
-      coreInstance.setMatchmakerAddress(matchMakerInstance,{from: accounts[2]}).then(function(){
-        return coreInstance.matchMaker.call().then(function(contra){
-          assert.equal(contra,matchMakerInstance, "Matchmaking contract not set");
-        });  
+       return Matchmaker.deployed().then(function(inst){
+        matchMakerInstance = inst;
+         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[2]}).then(function(){
+          return coreInstance.matchMaker.call().then(function(contra){
+            assert.equal(contra,matchMakerInstance.address, "Matchmaking contract not set");
+          });  
+        });
       });
     });
   });
   
-
+  it("...should un-pause the contract.", function() {
+    return SmartDroneCore.deployed().then(function(instance) {
+      coreInstance = instance;
+      return coreInstance.unpause( {from: accounts[0]});
+    }).then(function() {
+      return coreInstance.paused.call();
+    }).then(function(paused) {
+      assert.equal(paused,false, "Contract is stll paused");
+    });
+  });
 
   it("...should pause the contract.", function() {
     return SmartDroneCore.deployed().then(function(instance) {
