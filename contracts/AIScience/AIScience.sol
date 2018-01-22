@@ -29,7 +29,7 @@ contract AIScience is AIScienceInterface {
             //if primary value is now at or below multitasking value, exit the function
             if(primVal <= mulVal)
             {
-                return _primaryAttribute;
+                return newAI;
             }
             else
             {

@@ -30,6 +30,7 @@ module.exports = function(deployer) {
     deployer.deploy(ClockAuction,SmartDroneOwnership.address,9000);
     deployer.link(ClockAuction,SaleClockAuction);
     deployer.deploy(SaleClockAuction,SmartDroneOwnership.address,9000);
+    deployer.link(SaleClockAuction,[SmartDroneAuction,SmartDroneMinting]);
     deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction,SmartDroneManufacturing]);
     deployer.link(AIScienceInterface, [SmartDroneManufacturing,AIScience]);
     deployer.deploy(SmartDroneManufacturing);
@@ -42,7 +43,6 @@ module.exports = function(deployer) {
     deployer.link(SmartDroneMinting,[SmartDroneWar,SmartDroneCore]);
     deployer.deploy(SmartDroneWar);
     deployer.link(SmartDroneWar,SmartDroneCore);
-    deployer.deploy(SmartDroneCore);
   
 
 };

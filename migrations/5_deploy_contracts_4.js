@@ -23,26 +23,10 @@ var ClockAuctionBase = artifacts.require("ClockAuctionBase");
 var ClockAuction = artifacts.require("ClockAuction");
 
 module.exports = function(deployer) {
-    deployer.link(EtherWarzRoleManagement,[SmartDroneManufacturing,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneBase,[SmartDroneManufacturing,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(ClockAuctionBase,[ClockAuction,SaleClockAuction]);
-    deployer.link(ERC721,[SmartDroneManufacturing,ClockAuction,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(Ownable, [ClockAuction,SaleClockAuction]);
-    deployer.link(Pausable,[ClockAuction,SaleClockAuction,ClockAuction]);
-    deployer.link(SmartDroneManufacturing,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
-    deployer.link(SmartDroneAuction,[SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneMinting,[SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneWar,SmartDroneCore);
-    deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction,SmartDroneManufacturing]);
+ 
+    
+    deployer.deploy(SmartDroneCore);
    
-    deployer.link(EtherWarzRoleManagement,SmartDroneMatchMaking);
-       
-    
-    deployer.deploy(SmartDroneMatchMaking);
-    deployer.deploy(ERC721Match);
-    deployer.deploy(MatchmakerBase);
-    
-    
 
     
 };
