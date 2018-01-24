@@ -3,7 +3,6 @@ var EtherWarzRoleManagement = artifacts.require("EtherWarzRoleManagement");
 var SmartDroneMatchMaking = artifacts.require("SmartDroneMatchMaking");
 var SmartDroneBase = artifacts.require("SmartDroneBase");
 var SmartDroneCore = artifacts.require("SmartDroneCore");
-var SmartDroneManufacturing = artifacts.require("SmartDroneManufacturing");
 var SmartDroneMinting = artifacts.require("SmartDroneMinting");
 var SmartDroneOwnership = artifacts.require("SmartDroneOwnership");
 var SmartDroneWar = artifacts.require("SmartDroneWar");
@@ -23,17 +22,16 @@ var ClockAuctionBase = artifacts.require("ClockAuctionBase");
 var ClockAuction = artifacts.require("ClockAuction");
 
 module.exports = function(deployer) {
-    deployer.link(EtherWarzRoleManagement,[SmartDroneManufacturing,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneBase,[SmartDroneManufacturing,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
+    deployer.link(EtherWarzRoleManagement,[SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
+    deployer.link(SmartDroneBase,[SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
     deployer.link(ClockAuctionBase,[ClockAuction,SaleClockAuction]);
-    deployer.link(ERC721,[SmartDroneManufacturing,ClockAuction,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
+    deployer.link(ERC721,[ClockAuction,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
     deployer.link(Ownable, [ClockAuction,SaleClockAuction]);
     deployer.link(Pausable,[ClockAuction,SaleClockAuction,ClockAuction]);
-    deployer.link(SmartDroneManufacturing,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
     deployer.link(SmartDroneAuction,[SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
     deployer.link(SmartDroneMinting,[SmartDroneWar,SmartDroneCore]);
     deployer.link(SmartDroneWar,SmartDroneCore);
-    deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction,SmartDroneManufacturing]);
+    deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
    
     deployer.link(EtherWarzRoleManagement,SmartDroneMatchMaking);
        

@@ -41,7 +41,7 @@ contract SmartDroneWar is SmartDroneMinting {
         WarResolution candidateContract = WarResolution(_address);
 
         // NOTE: verify that a contract is what we expect
-        require(candidateContract.isWarInterface());
+        //require(candidateContract.isWarInterface());
 
         // Set the new contract address
         warResolution = candidateContract; 

@@ -12,7 +12,7 @@ contract SmartDroneMinting is SmartDroneAuction {
     /// @param _sourceAI the seed value for the Drones simple AI
     /// @param _lineId the physical structure of the Drone to be created, any value is accepted
     /// @param _owner the future owner of the created Drone. Default to contract Token Manager
-    function createPromoDrone(uint64 _sourceAI, uint128 _lineId, address _owner) external onlyTokManager {
+    function constructDrone(uint64 _sourceAI, uint128 _lineId, address _owner) external onlyTokManager {
         address droneOwner = _owner;
         if(droneOwner == address(0)){
             droneOwner = tokManagerAddress;

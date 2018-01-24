@@ -3,7 +3,6 @@ var EtherWarzRoleManagement = artifacts.require("EtherWarzRoleManagement");
 var SmartDroneMatchMaking = artifacts.require("SmartDroneMatchMaking");
 var SmartDroneBase = artifacts.require("SmartDroneBase");
 var SmartDroneCore = artifacts.require("SmartDroneCore");
-var SmartDroneManufacturing = artifacts.require("SmartDroneManufacturing");
 var SmartDroneMinting = artifacts.require("SmartDroneMinting");
 var SmartDroneOwnership = artifacts.require("SmartDroneOwnership");
 var SmartDroneWar = artifacts.require("SmartDroneWar");
@@ -24,28 +23,26 @@ var ClockAuction = artifacts.require("ClockAuction");
 
 module.exports = function(deployer) {
  
-    
+    deployer.deploy(Matchmaker,SmartDroneCore.address,9000)
     deployer.deploy(WarResolution);
     deployer.deploy(WarInterface).then(function(){
-        deployer.deploy(Matchmaker,SmartDroneCore.address,9000);
-        deployer.link(WarResolution,SmartDroneCore);
-        deployer.link(SmartDroneBase,SmartDroneMatchMaking);
-        deployer.link(ERC721,[SmartDroneMatchMaking,ERC721Match,Matchmaker,MatchmakerBase]);
-        deployer.link(ERC721Match,[SmartDroneManufacturing,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore,SmartDroneOwnership,SmartDroneMatchMaking,Matchmaker,MatchmakerBase])
-        deployer.link(SmartDroneMatchMaking,SmartDroneCore);
-        deployer.link(SmartDroneBase,SmartDroneMatchMaking);
-        deployer.link(SmartDroneAuction,SmartDroneMatchMaking);
-        deployer.link(SmartDroneManufacturing,SmartDroneMatchMaking);
-        deployer.link(SmartDroneMinting,SmartDroneMatchMaking);
-        deployer.link(SmartDroneOwnership,SmartDroneMatchMaking);
-        deployer.link(SmartDroneWar,SmartDroneMatchMaking);
-        deployer.link(WarInterface,WarResolution);
-        deployer.link(WarResolution,SmartDroneWar);
-        deployer.link(WarResolution,SmartDroneMatchMaking);
-        deployer.link(WarResolution,SmartDroneCore);
-        deployer.link(MatchmakerBase,[Matchmaker,SmartDroneMatchMaking,SmartDroneCore]);
-        deployer.link(Matchmaker,[SmartDroneMatchMaking,SmartDroneCore]);
+      
+            deployer.link(WarResolution,SmartDroneCore);
+            deployer.link(SmartDroneBase,SmartDroneMatchMaking);
+            deployer.link(ERC721,[SmartDroneMatchMaking,ERC721Match,Matchmaker,MatchmakerBase]);
+            deployer.link(ERC721Match,[SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore,SmartDroneOwnership,SmartDroneMatchMaking,Matchmaker,MatchmakerBase])
+            deployer.link(SmartDroneMatchMaking,SmartDroneCore);
+            deployer.link(SmartDroneBase,SmartDroneMatchMaking);
+            deployer.link(SmartDroneAuction,SmartDroneMatchMaking);
+            deployer.link(SmartDroneMinting,SmartDroneMatchMaking);
+            deployer.link(SmartDroneOwnership,SmartDroneMatchMaking);
+            deployer.link(SmartDroneWar,SmartDroneMatchMaking);
+            deployer.link(WarInterface,WarResolution);
+            deployer.link(WarResolution,SmartDroneWar);
+            deployer.link(WarResolution,SmartDroneMatchMaking);
+            deployer.link(WarResolution,SmartDroneCore);
+            deployer.link(MatchmakerBase,[Matchmaker,SmartDroneMatchMaking,SmartDroneCore]);
+            deployer.link(Matchmaker,[SmartDroneMatchMaking,SmartDroneCore]);
+       
     });
-
-    
 };

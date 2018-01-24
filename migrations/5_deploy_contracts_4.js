@@ -3,7 +3,6 @@ var EtherWarzRoleManagement = artifacts.require("EtherWarzRoleManagement");
 var SmartDroneMatchMaking = artifacts.require("SmartDroneMatchMaking");
 var SmartDroneBase = artifacts.require("SmartDroneBase");
 var SmartDroneCore = artifacts.require("SmartDroneCore");
-var SmartDroneManufacturing = artifacts.require("SmartDroneManufacturing");
 var SmartDroneMinting = artifacts.require("SmartDroneMinting");
 var SmartDroneOwnership = artifacts.require("SmartDroneOwnership");
 var SmartDroneWar = artifacts.require("SmartDroneWar");
