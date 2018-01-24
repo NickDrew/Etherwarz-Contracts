@@ -3,7 +3,7 @@ pragma solidity ^0.4.17;
 
 import 'contracts/Tokens/ERC721.sol';
 import 'contracts/Auctions/SaleClockAuction.sol';
-import 'contracts/Core/SmartDroneMatchMaking.sol';
+import 'contracts/Core/SmartDroneMatchmaking.sol';
 import 'contracts/RoleManagement/EtherWarzRoleManagement.sol';
 
 

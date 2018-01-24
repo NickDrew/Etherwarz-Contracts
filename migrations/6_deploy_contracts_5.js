@@ -15,7 +15,7 @@ var WarInterface = artifacts.require("WarInterface");
 var WarResolution = artifacts.require("WarResolution");
 var ERC721 = artifacts.require("ERC721");
 var ERC721Match = artifacts.require("ERC721Match");
-var Matchmaker = artifacts.require("Matchmaker");
+var Matchmaker = artifacts.require("MatchMaker");
 var MatchmakerBase = artifacts.require("MatchmakerBase");
 var ClockAuctionBase = artifacts.require("ClockAuctionBase");
 

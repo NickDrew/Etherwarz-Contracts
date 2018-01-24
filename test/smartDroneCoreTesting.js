@@ -11,34 +11,34 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the EthManager.", function() {
     return SmartDroneCore.deployed().then(function(instance) {
       coreInstance = instance;
-      return coreInstance.setEthManager("0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"});
+      return coreInstance.setEthManager(accounts[1], {from: accounts[0]});
     }).then(function() {
       return coreInstance.ethManagerAddress.call();
     }).then(function(ethAddress) {
-      assert.equal(ethAddress, "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", "The account was not set.");
+      assert.equal(ethAddress, accounts[1], "The account was not set.");
     });
   });
 
   it("...should set the ConManager.", function() {
-      return coreInstance.setConManager("0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function() {
+      return coreInstance.setConManager(accounts[1], {from: accounts[0]}).then(function() {
       return coreInstance.conManagerAddress.call();
     }).then(function(ethAddress) {
-      assert.equal(ethAddress, "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", "The account was not set.");
+      assert.equal(ethAddress, accounts[1], "The account was not set.");
     });
   });
 
   it("...should set the TokManager.", function() {
-      return coreInstance.setTokManager("0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function() {
+      return coreInstance.setTokManager(accounts[1], {from: accounts[0]}).then(function() {
       return coreInstance.tokManagerAddress.call();
     }).then(function(ethAddress) {
-      assert.equal(ethAddress, "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", "The account was not set.");
+      assert.equal(ethAddress, accounts[1], "The account was not set.");
     });
   });
 
   it("...should set the Auction contract.", function() {
        return SaleClockAuction.deployed().then(function(insta){
         saleInst = insta;
-         coreInstance.setSaleAuctionAddress(saleInst.address,{from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function(){
+         coreInstance.setSaleAuctionAddress(saleInst.address,{from: accounts[1]}).then(function(){
           return coreInstance.saleAuction.call().then(function(contra){
             assert.equal(contra,saleInst.address, "Matchmaking contract not set");
           });  
@@ -50,7 +50,7 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Matchmaking contract.", function() {
        return Matchmaker.deployed().then(function(inst){
         matchMakerInstance = inst;
-         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function(){
+         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[1]}).then(function(){
           return coreInstance.matchMaker.call().then(function(contra){
             assert.equal(contra,matchMakerInstance.address, "Matchmaking contract not set");
           });  
@@ -62,7 +62,7 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the AI Science contract.", function() {
        return AIScience.deployed().then(function(instai){
         aIScienceInstance = instai;
-         coreInstance.setaIScienceAddress(aIScienceInstance.address,{from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function(){
+         coreInstance.setaIScienceAddress(aIScienceInstance.address,{from: accounts[1]}).then(function(){
           return coreInstance.aIScience.call().then(function(contra){
             assert.equal(contra,aIScienceInstance.address, "AI Science contract not set");
           });  
@@ -73,7 +73,7 @@ contract('SmartDroneCore', function(accounts) {
     it("...should set the War Resolution contract.", function() {
       return WarResolution.deployed().then(function(warinst){
         warResolutionInstance = warinst;
-        coreInstance.setWarAddress(warResolutionInstance.address,{from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function(){
+        coreInstance.setWarAddress(warResolutionInstance.address,{from: accounts[1]}).then(function(){
          return coreInstance.warResolution.call().then(function(contra){
            contraddress = contra;
            assert.equal(contra,warResolutionInstance.address, "War resolution contract not set");
@@ -82,39 +82,46 @@ contract('SmartDroneCore', function(accounts) {
      });
    });
 
-  
+  //This needs to be done by the secManager
   it("...should un-pause the contract.", function() {
-      return coreInstance.unpauseCore( {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function() {
-      return coreInstance.paused.call().then(function(paused) {
-          assert.equal(paused,false, "Contract is stll paused");
-        });
-    });
+    return coreInstance.unpauseCore( {from: accounts[0]}).then(function() {
+    return coreInstance.paused.call().then(function(paused) {
+        assert.equal(paused,false, "Contract is stll paused");
+      });
+  });
   });
 
+  //Doing this with an account other than the secManager, because any manager account should be able to pause in an emergency!
   it("...should pause the contract.", function() {
-      return coreInstance.pause( {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function() {
+      return coreInstance.pause( {from: accounts[1]}).then(function() {
       return coreInstance.paused.call().then(function(paused) {
         assert.equal(paused,true, "Contract is stll unpaused");
       });
     });
   });
 
+  //Unpausing again to allow further processing
   it("...should un-pause the contract.", function() {
-    return coreInstance.unpauseCore( {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function() {
+    return coreInstance.unpauseCore( {from: accounts[0]}).then(function() {
     return coreInstance.paused.call().then(function(paused) {
         assert.equal(paused,false, "Contract is stll paused");
       });
   });
   });
- //constructDrone(uint64 _sourceAI, uint128 _lineId, address _owner) external onlyTokManager {
+
+
   it("...should create a drone.", function() {
-    return coreInstance.constructDrone(5,5,"0x6fa871bb04d170ab91c2dabe191bda9f16be1af3", {from: "0x6fa871bb04d170ab91c2dabe191bda9f16be1af3"}).then(function() {
-      return coreInstance.balanceOf("0x6fa871bb04d170ab91c2dabe191bda9f16be1af3").then(function(balance) {
+    return coreInstance.constructDrone(5,5,accounts[1], {from: accounts[1]}).then(function() {
+      return coreInstance.balanceOf(accounts[1]).then(function(balance) {
         assert.equal(balance,1, "Drone not created");
       });
     });
   });
-
-  
-
+/*
+  it("...should get drone data.", function(){
+    return coreInstance.smartDrones[0]({from: accounts[1]}).then(function(droneArray){
+      assert.equal(droneArray[0].sourceAI,5,"Drone data not set correctly");
+    });
+  });
+*/
 });
