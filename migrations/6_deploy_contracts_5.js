@@ -18,15 +18,22 @@ var ERC721Match = artifacts.require("ERC721Match");
 var Matchmaker = artifacts.require("MatchMaker");
 var MatchmakerBase = artifacts.require("MatchmakerBase");
 var ClockAuctionBase = artifacts.require("ClockAuctionBase");
-
+var Manufacturing = artifacts.require("Manufacturing");
+var ManufacturingInterface = artifacts.require("ManufacturingInterface");
+var AIScience = artifacts.require("AIScience");
 var ClockAuction = artifacts.require("ClockAuction");
 
 module.exports = function(deployer) {
- 
-    deployer.deploy(Matchmaker,SmartDroneCore.address,9000)
+    deployer.deploy(Manufacturing);
+    deployer.deploy(ManufacturingInterface);
+    deployer.deploy(Matchmaker)
+    //deployer.deploy(Matchmaker,SmartDroneCore.address,9000)
     deployer.deploy(WarResolution);
     deployer.deploy(WarInterface).then(function(){
-      
+            deployer.link(SmartDroneMinting,Manufacturing);
+            deployer.link(ManufacturingInterface,[SmartDroneMinting,Manufacturing]);
+            deployer.link(Pausable,Manufacturing);
+            deployer.link(AIScience,WarResolution);
             deployer.link(WarResolution,SmartDroneCore);
             deployer.link(SmartDroneBase,SmartDroneMatchMaking);
             deployer.link(ERC721,[SmartDroneMatchMaking,ERC721Match,Matchmaker,MatchmakerBase]);

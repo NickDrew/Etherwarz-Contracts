@@ -50,7 +50,7 @@ contract SmartDroneCore is SmartDroneMatchMaking {
 
     /// @notice Returns all the relevant information about a specific Smart Drone.
     /// @param _id The ID of the Drone of interest.
-   /* function getDrone(uint256 _id) external view returns (uint64 sourceAI, uint256 birthTime, uint256 cooldownEndBlock, uint256 victories, uint256 defeats, uint128 lineId)
+    function getDrone(uint256 _id) external view returns (uint64 sourceAI, uint256 birthTime, uint256 cooldownEndBlock, uint256 victories, uint256 defeats, uint128 lineId)
     {
         SmartDrone storage drone = smartDrones[_id];
         sourceAI = uint64(drone.sourceAI);
@@ -59,7 +59,7 @@ contract SmartDroneCore is SmartDroneMatchMaking {
         victories = uint256(drone.victories);
         defeats = uint256(drone.defeats);
         lineId = uint128(drone.lineId);
-    }*/
+    }
 
     //@dev Override unpause so it requires all external contract addresses
     /// to be set before contract can be unpaused. Also, we can't have
@@ -69,8 +69,8 @@ contract SmartDroneCore is SmartDroneMatchMaking {
     function unpauseCore() public onlySecManager whenPaused {
         require(saleAuction != address(0));
         require(matchMaker != address(0));
-        require(aIScience != address(0));
         require(warResolution != address(0));
+        require(manufacturingAddress != address(0));
         require(newContractAddress == address(0));
         //Actually unpause the contract.
         unpause();

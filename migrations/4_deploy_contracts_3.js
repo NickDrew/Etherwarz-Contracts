@@ -18,7 +18,6 @@ var ERC721Match = artifacts.require("ERC721Match");
 var Matchmaker = artifacts.require("MatchMaker");
 var MatchmakerBase = artifacts.require("MatchmakerBase");
 var ClockAuctionBase = artifacts.require("ClockAuctionBase");
-
 var ClockAuction = artifacts.require("ClockAuction");
 
 module.exports = function(deployer) {
@@ -32,7 +31,7 @@ module.exports = function(deployer) {
     deployer.link(SmartDroneMinting,[SmartDroneWar,SmartDroneCore]);
     deployer.link(SmartDroneWar,SmartDroneCore);
     deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
-   
+    
     deployer.link(EtherWarzRoleManagement,SmartDroneMatchMaking);
        
     
