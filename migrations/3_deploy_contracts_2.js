@@ -26,9 +26,9 @@ module.exports = function(deployer) {
     deployer.link(ERC721,[ClockAuction,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
     deployer.link(Ownable, [ClockAuction,SaleClockAuction]);
     deployer.link(Pausable,[ClockAuction,SaleClockAuction,ClockAuction]);
-    deployer.deploy(ClockAuction,SmartDroneOwnership.address,9000);
+    deployer.deploy(ClockAuction);
     deployer.link(ClockAuction,SaleClockAuction);
-    deployer.deploy(SaleClockAuction,SmartDroneOwnership.address,9000);
+    deployer.deploy(SaleClockAuction);
     deployer.link(SaleClockAuction,[SmartDroneAuction,SmartDroneMinting]);
     deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
     deployer.link(AIScienceInterface, [AIScience]);
