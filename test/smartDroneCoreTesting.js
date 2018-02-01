@@ -1,10 +1,14 @@
+
+
+
 var SmartDroneCore = artifacts.require("./SmartDroneCore.sol");
 var SaleClockAuction = artifacts.require("./SaleClockAuction.sol");
 var AIScience = artifacts.require("./AIScience.sol")
 var WarResolution = artifacts.require("./WarResolution.sol")
 var Matchmaker = artifacts.require("./MatchMaker.sol")
-var Manufacturing = artifacts.require("./Manufacturing")
-var MatchEnvironment = artifacts.require("./MatchEnvironment")
+var Manufacturing = artifacts.require("./Manufacturing.sol")
+var MatchEnvironment = artifacts.require("./MatchEnvironment.sol")
+
 
 contract('SmartDroneCore', function(accounts) {
   //core contract
@@ -17,11 +21,16 @@ contract('SmartDroneCore', function(accounts) {
   //siblings of sibling contracts
   var aiScienceInstance;
   var matchEnvironmentInstance;
-
+  var coreEvents;
+  var auctionEvents;
   //Setup the core contract and managers
   it("...should set the EthManager.", function() {
-    return SmartDroneCore.deployed().then(function(instance) {
+    return SmartDroneCore.new().then(function(instance) {
       coreInstance = instance;
+     /*coreEvents = coreInstance.allEvents(function(error, log){
+        if (!error)
+          console.log(log);
+      });*/
       return coreInstance.setEthManager(accounts[0], {from: accounts[0]});
     }).then(function() {
       return coreInstance.ethManagerAddress.call();
@@ -45,22 +54,31 @@ contract('SmartDroneCore', function(accounts) {
       assert.equal(ethAddress, accounts[0], "The account was not set.");
     });
   });
-
+  
+  //Setup the sibling contracts
   it("...should set the Auction contract.", function() {
-       return SaleClockAuction.new([coreInstance.address,9000],{from: accounts[0]}).then(function(insta){
+       return SaleClockAuction.new(coreInstance.address,9000,{from: accounts[0]}).then(function(insta){
         saleInstance = insta;
+        /*auctionEvents = saleInstance.allEvents(function(error, log){
+          if (!error)
+            console.log(log);
+        });*/
          coreInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]}).then(function(){
           return coreInstance.saleAuction.call().then(function(contra){
-            assert.equal(contra,saleInstance.address, "Matchmaking contract not set");
+            return saleInstance.nonFungibleContract.call().then(function(conFun){
+              assert.equal(conFun,coreInstance.address, "Auction contract not linked to core");
+              assert.equal(contra,saleInstance.address, "Auction contract not set");
+            });
+            
           });  
         });
       });
     });
  
-  //Setup the sibling contracts
+  
 
   it("...should set the Matchmaking contract.", function() {
-      return  Matchmaker.new([coreInstance.address,9000],{from: accounts[0]}).then(function(retInst){
+      return  Matchmaker.new(coreInstance.address,9000,{from: accounts[0]}).then(function(retInst){
         matchMakerInstance = retInst;
         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.matchMaker.call().then(function(contra){
@@ -84,7 +102,7 @@ contract('SmartDroneCore', function(accounts) {
    });
 
    it("...should set the Manufacturing contract.", function() {
-    return Manufacturing.new([coreInstance.address],{from: accounts[0]}).then(function(manInst){
+    return Manufacturing.new(coreInstance.address,{from: accounts[0]}).then(function(manInst){
       manufacturingInstance = manInst;
       coreInstance.setManufacturingAddress(manufacturingInstance.address,{from: accounts[0]}).then(function(){
        return coreInstance.manufacturingAddress.call().then(function(contra){
@@ -106,7 +124,7 @@ contract('SmartDroneCore', function(accounts) {
     }); 
    });
 
-   it("...should set the Manufacturing contract.", function() {
+   it("...should set the MatchEnvironment contract.", function() {
     return MatchEnvironment.new(coreInstance.address,{from: accounts[0]}).then(function(envInst){
       matchEnvironmentInstance = envInst;
       matchMakerInstance.setMatchEnvironmentAddress(matchEnvironmentInstance.address,{from: accounts[0]}).then(function(){
@@ -148,8 +166,8 @@ contract('SmartDroneCore', function(accounts) {
   //Create a drone
   it("...should create a drone.", function() {
     return manufacturingInstance.manufacturePromoDrone(5,6,accounts[0], {from: accounts[0]}).then(function() {
-      return coreInstance.balanceOf(accounts[0]).then(function(balance) {
-        assert.equal(balance,1, "Drone not created");
+      return coreInstance.balanceOf(accounts[0]).then(function(balance1) {
+        assert.equal(balance1,1, "Drone not created");
       });
     });
   });
@@ -161,22 +179,22 @@ contract('SmartDroneCore', function(accounts) {
       assert.equal(drone0[5],6,"Drone data not set correctly");
     });
   });
+  
 //Ensure we can transfer drone ownership
   it("...should transfer drone ownership.", function(){
     return coreInstance.transfer(accounts[1],0,{from: accounts[0]}).then(function(){
-      return coreInstance.balanceOf(accounts[1]).then(function(balance) {
-        assert.equal(balance,1, "Drone not transfered");
+      return coreInstance.balanceOf(accounts[1]).then(function(balance2) {
+        assert.equal(balance2,1, "Drone not transfered");
       });
     });
   });
-
-
-  ///Added new below
+  
   //Put the drone up for sale
   //function createSaleAuction(uint256 _droneId, uint256 _startingPrice, uint256 _endingPrice, uint256 _duration)
   it("...should create drone auction.", function(){
     return coreInstance.createSaleAuction(0,10000,8000,3600,{from: accounts[1]}).then(function(){
       return saleInstance.getAuction(0).then(function(auctionInst0) {
+        //assert.equal(1,1,"Not a real test");
         assert.equal(auctionInst0[0],accounts[1], "Seller not correct");
         assert.equal(auctionInst0[1],10000, "Starting Price not set correctly");
         assert.equal(auctionInst0[2],8000, "Ending Price not set correctly");
@@ -184,28 +202,31 @@ contract('SmartDroneCore', function(accounts) {
       });
     });
   });
-  
-  //Bid on the drone
-  //Ensure the drone has switched owner
-  it("...should bid on an auction.", function(){
-    return saleInstance.bid(0,{from: accounts[0], to: saleInstance.address, value: 10000}).then(function(){
-      return coreInstance.balanceOf(accounts[0]).then(function(balance) {
-        assert.equal(balance,1, "Drone has not transferred ownership");
+
+  //Create a drone
+  it("...should create a drone.", function() {
+    return manufacturingInstance.manufacturePromoDrone(5,6,accounts[1], {from: accounts[0]}).then(function() {
+      return coreInstance.balanceOf(accounts[1]).then(function(balance3) {
+        assert.equal(balance3,1, "Drone not created");
       });
     });
   });
 
-  //Make another drone
-  it("...should create a drone.", function() {
-    return manufacturingInstance.manufacturePromoDrone(5,6,accounts[1], {from: accounts[0]}).then(function() {
-      return coreInstance.balanceOf(accounts[0]).then(function(balance) {
-        assert.equal(balance,1, "Drone not created");
+  //Bid on the drone
+  //Ensure the drone has switched owner
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(0,{from: accounts[0], to: saleInstance.address, value: 10000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        console.log(balance3);
+        assert.equal(balance3,1, "Drone has not transferred ownership");
       });
     });
   });
 
   //Make a match
-  
+  if("...should create a match", function(){
+    
+  })
 
 
   //Take a match
