@@ -18,28 +18,18 @@ var ERC721Match = artifacts.require("ERC721Match");
 var Matchmaker = artifacts.require("MatchMaker");
 var MatchmakerBase = artifacts.require("MatchmakerBase");
 var ClockAuctionBase = artifacts.require("ClockAuctionBase");
+var Manufacturing = artifacts.require("Manufacturing");
+var ManufacturingInterface = artifacts.require("ManufacturingInterface");
+var AIScience = artifacts.require("AIScience");
 var ClockAuction = artifacts.require("ClockAuction");
+var MatchEnvironment = artifacts.require("MatchEnvironment");
+var MatchEnvironmentInterface = artifacts.require("MatchEnvironmentInterface");
 
 module.exports = function(deployer) {
-    deployer.link(EtherWarzRoleManagement,[SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneBase,[SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(ClockAuctionBase,[ClockAuction,SaleClockAuction]);
-    deployer.link(ERC721,[ClockAuction,SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(Ownable, [ClockAuction,SaleClockAuction]);
-    deployer.link(Pausable,[ClockAuction,SaleClockAuction,ClockAuction]);
-    deployer.link(SmartDroneAuction,[SmartDroneMinting,SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneMinting,[SmartDroneWar,SmartDroneCore]);
-    deployer.link(SmartDroneWar,SmartDroneCore);
-    deployer.link(SmartDroneOwnership,[SmartDroneMinting,SmartDroneCore,SmartDroneWar,SmartDroneAuction]);
-    
-    deployer.link(EtherWarzRoleManagement,SmartDroneMatchMaking);
-       
-    
-    deployer.deploy(SmartDroneMatchMaking);
-    deployer.deploy(ERC721Match);
-    deployer.deploy(MatchmakerBase);
-    
-    
-
-    
+    deployer.deploy(MatchEnvironment);
+    deployer.deploy(MatchEnvironmentInterface).then(function(){
+            deployer.link(MatchEnvironmentInterface,[MatchEnvironment,Matchmaker]);
+            deployer.link(Ownable,MatchEnvironment);
+            deployer.link(Matchmaker, MatchEnvironment);   
+    });
 };

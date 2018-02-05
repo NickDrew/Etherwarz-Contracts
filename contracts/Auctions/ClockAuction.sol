@@ -51,7 +51,7 @@ contract ClockAuction is Pausable, ClockAuctionBase {
     /// @param _duration - Length of time to move between starting
     ///  price and ending price (in seconds).
     /// @param _seller - Seller, if not the message sender
-    function createAuction(uint256 _tokenId,uint256 _startingPrice,uint256 _endingPrice,uint256 _duration,address _seller) external whenNotPaused {
+    function createAuction(uint256 _tokenId, uint256 _startingPrice, uint256 _endingPrice, uint256 _duration, address _seller) external whenNotPaused {
         // Sanity check that no inputs overflow how many bits we've allocated
         // to store them in the auction struct.
         require(_startingPrice == uint256(uint128(_startingPrice)));

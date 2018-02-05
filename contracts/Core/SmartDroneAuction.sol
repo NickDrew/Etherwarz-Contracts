@@ -1,10 +1,9 @@
 pragma solidity ^0.4.17;
 
-import 'contracts/Core/SmartDroneManufacturing.sol';
 import 'contracts/RoleManagement/EtherWarzRoleManagement.sol';
-
+import 'contracts/Core/SmartDroneOwnership.sol';
 /// @title Handles creating auctions for sale of Drones.
-contract SmartDroneAuction is SmartDroneManufacturing {
+contract SmartDroneAuction is SmartDroneOwnership {
 
     /// @dev Sets the reference to the sale auction.
     /// @param _address - Address opf sale contract.

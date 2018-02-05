@@ -13,7 +13,6 @@ var SaleClockAuction = artifacts.require("SaleClockAuction");
 var SmartDroneAuction = artifacts.require("SmartDroneAuction");
 var SmartDroneBase = artifacts.require("SmartDroneBase");
 var SmartDroneCore = artifacts.require("SmartDroneCore");
-var SmartDroneManufacturing = artifacts.require("SmartDroneManufacturing");
 var SmartDroneMinting = artifacts.require("SmartDroneMinting");
 var SmartDroneOwnership = artifacts.require("SmartDroneOwnership");
 var SmartDroneWar = artifacts.require("SmartDroneWar");

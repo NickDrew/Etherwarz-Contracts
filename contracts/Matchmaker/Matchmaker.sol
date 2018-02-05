@@ -2,8 +2,11 @@ pragma solidity ^0.4.17;
 
 import "contracts/Matchmaker/MatchmakerBase.sol";
 import 'contracts/zeppelin/ownership/Ownable.sol';
+import 'contracts/Matchmaker/MatchEnvironmentInterface.sol';
+
 contract MatchMaker is Pausable, MatchmakerBase {
 
+    
     function MatchMaker( address _nftMatchAddress, uint256 _cut) public {
         require(_cut <= 10000);
         runnersCut = _cut;
@@ -28,7 +31,7 @@ contract MatchMaker is Pausable, MatchmakerBase {
 
     /// @dev Makes a new match
     function makeMatch(uint256 _tokenId, uint128 _matchCash, uint32 _matchDetails, address _matcher) external payable whenNotPaused {
-        require(_owns(msg.sender, _tokenId));
+        require(msg.sender == enviroAddress);
         require(matchableNonFungibleContract.canMatch(_tokenId));
         require(msg.value >= _matchCash);
         Match memory _match = Match(
@@ -74,10 +77,12 @@ contract MatchMaker is Pausable, MatchmakerBase {
     }
 
     /// @dev Returns match info for an NFT in a match
-    function getMatch(uint256 _tokenId) external view returns(address maker, uint128 matchCash, uint128 startedAt)
+    function getMatch(uint256 _tokenId) external view returns(address maker, uint128 matchCash, uint64 startedAt)
     {
+       
         Match storage _match = tokenIdtoMatch[_tokenId];
         require(_isInMatch(_match));
+       
         return(
             _match.maker,
             _match.matchCash,
@@ -90,4 +95,19 @@ contract MatchMaker is Pausable, MatchmakerBase {
         return true;
     }
     
+    ///@dev The address of the sibling contract that is used to control environment creation
+    address public enviroAddress;
+
+    ///@dev Update the address of the aMAtchMaker contract. Can only be called by the Contract Manager.
+      function setMatchEnvironmentAddress(address _address) external onlyOwner {
+
+        MatchEnvironmentInterface candidateContract = MatchEnvironmentInterface(_address);
+
+        // NOTE: verify that a contract is what we expect
+        require(candidateContract.isEnvironment());
+
+        // Set the new contract address
+        enviroAddress = _address; 
+    }
+
 }
