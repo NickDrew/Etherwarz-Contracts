@@ -8,6 +8,8 @@ import 'contracts/Matchmaker/MatchEnvironmentInterface.sol';
 /// @dev Contains models, variables and internal methods for the matchmaker.
 contract MatchEnvironment is  MatchEnvironmentInterface, Ownable
 {
+    event Test(bool);
+    event Test(address);
     function MatchEnvironment(address _nftAddress) public {
        
         ERC721Match candidateContract = ERC721Match(_nftAddress);
@@ -36,9 +38,9 @@ contract MatchEnvironment is  MatchEnvironmentInterface, Ownable
         return(matchableNonFungibleContract.ownerOf(_tokenId)== _claimant);
     }
    
-    function makeMatch(uint256 _tokenId, uint128 _matchCash, uint256 _envDetails, address _matcher) external payable {
+    function makeMatch(uint256 _tokenId, uint128 _matchCash, uint256 _envDetails) external payable {
         require(_owns(msg.sender, _tokenId));
-        matchMaker.makeMatch.value(msg.value)(_tokenId,_matchCash,envDetailOptions[_envDetails],_matcher );
+        matchMaker.makeMatch.value(msg.value)(_tokenId,_matchCash,envDetailOptions[_envDetails],msg.sender );
     }
 
     function makeEnvironment(uint256 _envID, uint32 _envDetails) external onlyOwner

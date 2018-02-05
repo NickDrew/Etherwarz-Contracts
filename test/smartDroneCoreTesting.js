@@ -27,10 +27,10 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the EthManager.", function() {
     return SmartDroneCore.new().then(function(instance) {
       coreInstance = instance;
-     /*coreEvents = coreInstance.allEvents(function(error, log){
+     coreEvents = coreInstance.allEvents(function(error, log){
         if (!error)
           console.log(log);
-      });*/
+      });
       return coreInstance.setEthManager(accounts[0], {from: accounts[0]});
     }).then(function() {
       return coreInstance.ethManagerAddress.call();
@@ -80,6 +80,10 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Matchmaking contract.", function() {
       return  Matchmaker.new(coreInstance.address,9000,{from: accounts[0]}).then(function(retInst){
         matchMakerInstance = retInst;
+        matchMakerEvents = matchMakerInstance.allEvents(function(error, log){
+          if (!error)
+            console.log(log);
+        });
         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.matchMaker.call().then(function(contra){
            assert.equal(contra,matchMakerInstance.address, "Matchmaking contract not set");
@@ -127,9 +131,18 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the MatchEnvironment contract.", function() {
     return MatchEnvironment.new(coreInstance.address,{from: accounts[0]}).then(function(envInst){
       matchEnvironmentInstance = envInst;
+      /*matchEnvEvents = matchEnvironmentInstance.allEvents(function(error, log){
+        if (!error)
+          console.log(log);
+      });*/
       matchMakerInstance.setMatchEnvironmentAddress(matchEnvironmentInstance.address,{from: accounts[0]}).then(function(){
        return matchMakerInstance.enviroAddress.call().then(function(contra){
-         assert.equal(contra,matchEnvironmentInstance.address, "MatchEnvironment contract not set");
+         return matchEnvironmentInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
+           return matchEnvironmentInstance.matchMaker.call().then(function(matchMkRet){
+            assert.equal(contra,matchEnvironmentInstance.address, "MatchEnvironment contract not set");
+            assert.equal(matchMkRet,matchMakerInstance.address, "MatchEnvironment matchmaker ref not set");
+           });
+         });
        });  
      });
     }); 
@@ -165,7 +178,7 @@ contract('SmartDroneCore', function(accounts) {
 
   //Create a drone
   it("...should create a drone.", function() {
-    return manufacturingInstance.manufacturePromoDrone(5,6,accounts[0], {from: accounts[0]}).then(function() {
+    return manufacturingInstance.manufacturePromoDrone(2525252525257550,00000000000000000000000005050505,accounts[0], {from: accounts[0]}).then(function() {
       return coreInstance.balanceOf(accounts[0]).then(function(balance1) {
         assert.equal(balance1,1, "Drone not created");
       });
@@ -175,8 +188,8 @@ contract('SmartDroneCore', function(accounts) {
  //Make sure the drones data has been setup correctly
   it("...should get drone data.", function(){
     return coreInstance.getDrone(0,{from: accounts[0]}).then(function(drone0){
-      assert.equal(drone0[0],5,"Drone data not set correctly");
-      assert.equal(drone0[5],6,"Drone data not set correctly");
+      assert.equal(drone0[0],2525252525257550,"Drone data not set correctly");
+      assert.equal(drone0[5],00000000000000000000000005050505,"Drone data not set correctly");
     });
   });
   
@@ -205,7 +218,7 @@ contract('SmartDroneCore', function(accounts) {
 
   //Create a drone
   it("...should create a drone.", function() {
-    return manufacturingInstance.manufacturePromoDrone(5,6,accounts[1], {from: accounts[0]}).then(function() {
+    return manufacturingInstance.manufacturePromoDrone(2525252525259040,00000000000000000000000002550755,accounts[1], {from: accounts[0]}).then(function() {
       return coreInstance.balanceOf(accounts[1]).then(function(balance3) {
         assert.equal(balance3,1, "Drone not created");
       });
@@ -217,23 +230,44 @@ contract('SmartDroneCore', function(accounts) {
   it("...should bid on an auction.", function(){
     return saleInstance.bid(0,{from: accounts[0], to: saleInstance.address, value: 10000}).then(function(){
       return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
-        console.log(balance3);
         assert.equal(balance3,1, "Drone has not transferred ownership");
       });
     });
   });
 
-  //Make a match
-  if("...should create a match", function(){
-    
-  })
+ /* //Make a match
+  //Initialise an environment
+  it("...should create an environment", function(){
+    return matchEnvironmentInstance.makeEnvironment(0,10102020,{from: accounts[0]}).then(function(){
+      return matchEnvironmentInstance.getEnvironment(0,{from: accounts[0]}).then(function(environ0){
+        assert.equal(environ0,10102020,"Environment not set");
+      });
+    });
+  });
+
+  //Use the environment to create a match
+  it("...should create a match", function(){
+    return matchEnvironmentInstance.makeMatch(0,10000,0,{from: accounts[0], to: matchEnvironmentInstance.address, value: 10000}).then(function(){
+      return matchMakerInstance.getMatch(0,{from: accounts[0]}).then(function(match0){
+        assert.equal(match0[0],accounts[0],"Match maker not set correctly");
+        assert.equal(match0[1],10000,"Match cash not set correctly");
+      });
+    });
+  });
 
 
   //Take a match
-
-  //Check winner
-
-  //Check looser
+  it("...should take a match", function(){
+    return matchMakerInstance.takeMatch(1,0,{from: accounts[1], to: matchMakerInstance.address, value: 10000}).then(function(){
+        //Check winner
+        return coreInstance.getDrone(0,{from: accounts[0]}).then(function(drone0){
+          console.log(drone0);
+          assert.equal(1,1,"Fake Test");
+        });       
+    });
+  });*/
+  
+  
 
   //Ensure the looser has learned from the fight
 

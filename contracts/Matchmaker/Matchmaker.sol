@@ -6,6 +6,7 @@ import 'contracts/Matchmaker/MatchEnvironmentInterface.sol';
 
 contract MatchMaker is Pausable, MatchmakerBase {
 
+    
     function MatchMaker( address _nftMatchAddress, uint256 _cut) public {
         require(_cut <= 10000);
         runnersCut = _cut;
@@ -76,10 +77,12 @@ contract MatchMaker is Pausable, MatchmakerBase {
     }
 
     /// @dev Returns match info for an NFT in a match
-    function getMatch(uint256 _tokenId) external view returns(address maker, uint128 matchCash, uint128 startedAt)
+    function getMatch(uint256 _tokenId) external view returns(address maker, uint128 matchCash, uint64 startedAt)
     {
+       
         Match storage _match = tokenIdtoMatch[_tokenId];
         require(_isInMatch(_match));
+       
         return(
             _match.maker,
             _match.matchCash,

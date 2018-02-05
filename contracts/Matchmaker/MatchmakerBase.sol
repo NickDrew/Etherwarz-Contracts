@@ -35,10 +35,14 @@ contract MatchmakerBase{
     // Map from Makers token ID to their corresponding match.
     mapping (uint256=> Match) tokenIdtoMatch;
 
-    event MatchCreated(uint256 tokenId, uint256 matchCash, uint32 matchDetails);
+    event MatchCreated(uint256 tokenId, uint256 matchCash, uint32 matchDetails, uint64 startedAt);
     event MatchTaken(uint256 tokenId, uint256 winnerCash, uint256 winnerID, uint256 looserID);
     event MatchCancelled(uint256 tokenID);
-
+    event Test(bool returner);
+    event Test(address returner);
+    event Test128(uint128 returner);
+    event Test64(uint64 returner);
+    event Testu(uint returner);
     /// @dev Returns true if the claimant owns the token.
     function _owns(address _claimant, uint256 _tokenId) internal view returns(bool) {
         return(matchableNonFungibleContract.ownerOf(_tokenId)== _claimant);
@@ -53,7 +57,8 @@ contract MatchmakerBase{
         MatchCreated(
             uint256(_tokenId),
             uint256(_match.matchCash),
-            uint32(_match.matchDetails)
+            uint32(_match.matchDetails),
+            uint64(_match.startedAt)
         );
 
     }
@@ -61,7 +66,6 @@ contract MatchmakerBase{
     function _takeMatch(uint256 _makerTokenId, uint256 _takerTokenId, uint256 _cashAmount) internal
     {
         Match storage _match = tokenIdtoMatch[_makerTokenId];
-
         require(_isInMatch(_match));
         require(_cashAmount >= _match.matchCash);
         address makerAddress = _match.maker;
@@ -69,8 +73,9 @@ contract MatchmakerBase{
         address looser;
         uint256 winnerCash = 0;
         (winner, looser) = matchableNonFungibleContract.processMatch(_makerTokenId, _takerTokenId,_match.matchDetails);
-
-        _removeMatch(_makerTokenId);
+        Test(winner);
+        Test(looser);
+        /*_removeMatch(_makerTokenId);
 
         if((_cashAmount+_match.matchCash)>0)
         {
@@ -89,7 +94,7 @@ contract MatchmakerBase{
         {
             MatchTaken(_makerTokenId, winnerCash, _takerTokenId, _makerTokenId);
         }
-        
+        */
         
     }
 
