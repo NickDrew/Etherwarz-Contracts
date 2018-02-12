@@ -8,8 +8,6 @@ import 'contracts/Matchmaker/MatchEnvironmentInterface.sol';
 /// @dev Contains models, variables and internal methods for the matchmaker.
 contract MatchEnvironment is  MatchEnvironmentInterface, Ownable
 {
-    event Test(bool);
-    event Test(address);
     function MatchEnvironment(address _nftAddress) public {
        
         ERC721Match candidateContract = ERC721Match(_nftAddress);

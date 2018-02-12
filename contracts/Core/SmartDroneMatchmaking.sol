@@ -10,7 +10,6 @@ import 'contracts/Core/SmartDroneWar.sol';
 ///@author StreamVade
 contract SmartDroneMatchMaking is SmartDroneWar {
 
-
      ///@dev The address of the sibling contract that is used to control AI
     MatchMaker public matchMaker;
 
@@ -36,16 +35,21 @@ contract SmartDroneMatchMaking is SmartDroneWar {
         address winnerAdd;
         address looserAdd;
         (winner,primeAtt,looserAI)= warResolution.War(smartDrones[_makerTokenId].sourceAI,smartDrones[_makerTokenId].lineId,smartDrones[_takerTokenId].sourceAI,smartDrones[_takerTokenId].lineId,_matchDetails);
-
+        
         if(winner==1)
         {
             smartDrones[_takerTokenId].sourceAI = looserAI;
+            smartDrones[_takerTokenId].defeats++;
+            smartDrones[_makerTokenId].victories++;
             winnerAdd = droneIndexToOwner[_makerTokenId];
             looserAdd = droneIndexToOwner[_takerTokenId];
         }
         else
         {
+            
             smartDrones[_makerTokenId].sourceAI = looserAI;
+            smartDrones[_makerTokenId].defeats++;
+            smartDrones[_takerTokenId].victories++;
             winnerAdd = droneIndexToOwner[_takerTokenId];
             looserAdd = droneIndexToOwner[_makerTokenId];
         }

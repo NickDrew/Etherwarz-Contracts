@@ -38,11 +38,6 @@ contract MatchmakerBase{
     event MatchCreated(uint256 tokenId, uint256 matchCash, uint32 matchDetails, uint64 startedAt);
     event MatchTaken(uint256 tokenId, uint256 winnerCash, uint256 winnerID, uint256 looserID);
     event MatchCancelled(uint256 tokenID);
-    event Test(bool returner);
-    event Test(address returner);
-    event Test128(uint128 returner);
-    event Test64(uint64 returner);
-    event Testu(uint returner);
     /// @dev Returns true if the claimant owns the token.
     function _owns(address _claimant, uint256 _tokenId) internal view returns(bool) {
         return(matchableNonFungibleContract.ownerOf(_tokenId)== _claimant);
@@ -73,9 +68,7 @@ contract MatchmakerBase{
         address looser;
         uint256 winnerCash = 0;
         (winner, looser) = matchableNonFungibleContract.processMatch(_makerTokenId, _takerTokenId,_match.matchDetails);
-        Test(winner);
-        Test(looser);
-        /*_removeMatch(_makerTokenId);
+        _removeMatch(_makerTokenId);
 
         if((_cashAmount+_match.matchCash)>0)
         {
@@ -94,7 +87,7 @@ contract MatchmakerBase{
         {
             MatchTaken(_makerTokenId, winnerCash, _takerTokenId, _makerTokenId);
         }
-        */
+        
         
     }
 

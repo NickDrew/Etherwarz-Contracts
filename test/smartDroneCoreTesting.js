@@ -23,13 +23,16 @@ contract('SmartDroneCore', function(accounts) {
   var matchEnvironmentInstance;
   var coreEvents;
   var auctionEvents;
+  var warResEvents;
+  var aiSciEvents;
   //Setup the core contract and managers
   it("...should set the EthManager.", function() {
     return SmartDroneCore.new().then(function(instance) {
       coreInstance = instance;
      coreEvents = coreInstance.allEvents(function(error, log){
         if (!error)
-          console.log(log);
+          console.log(log.event);
+          console.log(log.args);
       });
       return coreInstance.setEthManager(accounts[0], {from: accounts[0]});
     }).then(function() {
@@ -61,7 +64,8 @@ contract('SmartDroneCore', function(accounts) {
         saleInstance = insta;
         /*auctionEvents = saleInstance.allEvents(function(error, log){
           if (!error)
-            console.log(log);
+            console.log(log.event);
+          console.log(log.args);
         });*/
          coreInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]}).then(function(){
           return coreInstance.saleAuction.call().then(function(contra){
@@ -82,7 +86,8 @@ contract('SmartDroneCore', function(accounts) {
         matchMakerInstance = retInst;
         matchMakerEvents = matchMakerInstance.allEvents(function(error, log){
           if (!error)
-            console.log(log);
+          console.log(log.event);
+          console.log(log.args);
         });
         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.matchMaker.call().then(function(contra){
@@ -97,6 +102,11 @@ contract('SmartDroneCore', function(accounts) {
     it("...should set the War Resolution contract.", function() {
       return WarResolution.deployed().then(function(warinst){
         warResolutionInstance = warinst;
+        warResEvents = warinst.allEvents(function(error, log){
+          if (!error)
+            console.log(log.event);
+            console.log(log.args);
+        });
         coreInstance.setWarAddress(warResolutionInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.warResolution.call().then(function(contra){
            assert.equal(contra,warResolutionInstance.address, "War resolution contract not set");
@@ -120,6 +130,11 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the aiScience contract.", function() {
     return AIScience.new({from: accounts[0]}).then(function(aiInst){
       aiScienceInstance = aiInst;
+      aiSciEvents = aiInst.allEvents(function(error, log){
+        if (!error)
+          console.log(log.event);
+          console.log(log.args);
+      });
       warResolutionInstance.setaIScienceAddress(aiScienceInstance.address,{from: accounts[0]}).then(function(){
        return warResolutionInstance.aIScience.call().then(function(contra){
          assert.equal(contra,aiScienceInstance.address, "AIScience contract not set");
@@ -133,7 +148,8 @@ contract('SmartDroneCore', function(accounts) {
       matchEnvironmentInstance = envInst;
       /*matchEnvEvents = matchEnvironmentInstance.allEvents(function(error, log){
         if (!error)
-          console.log(log);
+          console.log(log.event);
+          console.log(log.args);
       });*/
       matchMakerInstance.setMatchEnvironmentAddress(matchEnvironmentInstance.address,{from: accounts[0]}).then(function(){
        return matchMakerInstance.enviroAddress.call().then(function(contra){
@@ -235,12 +251,12 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
- /* //Make a match
+  //Make a match
   //Initialise an environment
   it("...should create an environment", function(){
-    return matchEnvironmentInstance.makeEnvironment(0,10102020,{from: accounts[0]}).then(function(){
+    return matchEnvironmentInstance.makeEnvironment(0,10102050,{from: accounts[0]}).then(function(){
       return matchEnvironmentInstance.getEnvironment(0,{from: accounts[0]}).then(function(environ0){
-        assert.equal(environ0,10102020,"Environment not set");
+        assert.equal(environ0,10102050,"Environment not set");
       });
     });
   });
@@ -260,16 +276,18 @@ contract('SmartDroneCore', function(accounts) {
   it("...should take a match", function(){
     return matchMakerInstance.takeMatch(1,0,{from: accounts[1], to: matchMakerInstance.address, value: 10000}).then(function(){
         //Check winner
-        return coreInstance.getDrone(0,{from: accounts[0]}).then(function(drone0){
-          console.log(drone0);
-          assert.equal(1,1,"Fake Test");
+        return coreInstance.getDrone(0,{from: accounts[0]}).then(function(drone1){
+          assert.equal(drone1[3],1,"Winner did not accumulate a victory");
         });       
     });
-  });*/
+  });
   
-  
-
-  //Ensure the looser has learned from the fight
+  it("...should learn from its loss", function(){
+    //Ensure the looser has learned from the fight
+    return coreInstance.getDrone(1,{from: accounts[0]}).then(function(drone1){
+      assert.equal(drone1[0],2525252625259040,"Looser did not learn");
+    });
+  });
 
   //Transfer our cut
 
