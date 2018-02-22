@@ -6,7 +6,7 @@ import 'contracts/Tokens/ERC721Match.sol';
 /// @title Matchmaker Core
 /// @dev Contains models, variables and internal methods for the matchmaker.
 contract MatchmakerBase{
-
+    
     //Represents a match for an NFT
     struct Match {
         //Owner of the initiating NFT
@@ -67,17 +67,20 @@ contract MatchmakerBase{
         address winner;
         address looser;
         uint256 winnerCash = 0;
+        uint256 matchCash = _match.matchCash;
         (winner, looser) = matchableNonFungibleContract.processMatch(_makerTokenId, _takerTokenId,_match.matchDetails);
         _removeMatch(_makerTokenId);
-
-        if((_cashAmount+_match.matchCash)>0)
+        
+        if((_cashAmount+matchCash)>0)
         {
-            uint256 matchRunnerCut = _computeCut((_cashAmount+_match.matchCash));
-            winnerCash = _cashAmount+_match.matchCash - matchRunnerCut;
-
+            
+            uint256 matchRunnerCut = _computeCut((_cashAmount+matchCash));
+            winnerCash = (_cashAmount + matchCash - matchRunnerCut);
+            
+            
             //guarded against re-entry attack by already having called _removeMatch.
             winner.transfer(winnerCash);
-
+            
         }
         if(winner == makerAddress)
         {

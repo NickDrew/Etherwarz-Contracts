@@ -5,8 +5,8 @@ import 'contracts/zeppelin/ownership/Ownable.sol';
 import 'contracts/Matchmaker/MatchEnvironmentInterface.sol';
 
 contract MatchMaker is Pausable, MatchmakerBase {
-
     
+
     function MatchMaker( address _nftMatchAddress, uint256 _cut) public {
         require(_cut <= 10000);
         runnersCut = _cut;
@@ -48,9 +48,10 @@ contract MatchMaker is Pausable, MatchmakerBase {
     function takeMatch(uint256 _takerTokenId, uint256 _makerTokenId) external payable whenNotPaused {
         require(_owns(msg.sender,_takerTokenId));
         require(msg.value >= tokenIdtoMatch[_makerTokenId].matchCash);
+        uint256 tstval = tokenIdtoMatch[_makerTokenId].matchCash;
         escrowAmount += tokenIdtoMatch[_makerTokenId].matchCash;
         _takeMatch(_makerTokenId, _takerTokenId, tokenIdtoMatch[_makerTokenId].matchCash);
-        escrowAmount -= (tokenIdtoMatch[_makerTokenId].matchCash *2);
+        escrowAmount -= (tstval *2);
     }
     
     /// @dev Cancel an existing match

@@ -34,11 +34,11 @@ contract('SmartDroneCore', function(accounts) {
           console.log(log.event);
           console.log(log.args);
       });
-      return coreInstance.setEthManager(accounts[0], {from: accounts[0]});
+      return coreInstance.setEthManager(accounts[2], {from: accounts[0]});
     }).then(function() {
       return coreInstance.ethManagerAddress.call();
     }).then(function(ethAddress) {
-      assert.equal(ethAddress, accounts[0], "The account was not set.");
+      assert.equal(ethAddress, accounts[2], "The account was not set.");
     });
   });
 
@@ -102,11 +102,11 @@ contract('SmartDroneCore', function(accounts) {
     it("...should set the War Resolution contract.", function() {
       return WarResolution.deployed().then(function(warinst){
         warResolutionInstance = warinst;
-        warResEvents = warinst.allEvents(function(error, log){
+       /* warResEvents = warinst.allEvents(function(error, log){
           if (!error)
             console.log(log.event);
             console.log(log.args);
-        });
+        });*/
         coreInstance.setWarAddress(warResolutionInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.warResolution.call().then(function(contra){
            assert.equal(contra,warResolutionInstance.address, "War resolution contract not set");
@@ -130,11 +130,11 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the aiScience contract.", function() {
     return AIScience.new({from: accounts[0]}).then(function(aiInst){
       aiScienceInstance = aiInst;
-      aiSciEvents = aiInst.allEvents(function(error, log){
+     /* aiSciEvents = aiInst.allEvents(function(error, log){
         if (!error)
           console.log(log.event);
           console.log(log.args);
-      });
+      });*/
       warResolutionInstance.setaIScienceAddress(aiScienceInstance.address,{from: accounts[0]}).then(function(){
        return warResolutionInstance.aIScience.call().then(function(contra){
          assert.equal(contra,aiScienceInstance.address, "AIScience contract not set");
@@ -290,6 +290,40 @@ contract('SmartDroneCore', function(accounts) {
   });
 
   //Transfer our cut
+    //Activate bid extraction
+    it("...should transfer the bid balance", function(){
+      //Ensure our cut from the sale has been transfered to core.
+      return coreInstance.withdrawAuctionBalances({from: accounts[0]}).then(function(){
+        var val = web3.eth.getBalance(coreInstance.address);
+        assert.equal(val,9000,"Balance did not transfer");
+      });
+    });
+    //Activate matchmaking extraction
+    it("...should transfer the matchmaking balance", function(){
+      //Ensure our cut from the sale has been transfered to core.
+      return matchMakerInstance.withdrawBalance({from: accounts[0]}).then(function(){
+        var val = web3.eth.getBalance(coreInstance.address);
+        assert.equal(val,27000,"Balance did not transfer");
+      });
+    });
+
+  //Extract our cut to the ethManager accounts[2]
+  it("...should transfer the core balance", function(){
+    console.log(web3.eth.getBalance(coreInstance.address));
+    var oldEthManVal = web3.eth.getBalance(accounts[2]);
+    console.log(oldEthManVal);
+    //Ensure the core value is sent to the ethManager account.
+    return coreInstance.withdrawBalance({from: accounts[2]}).then(function(){
+      var val = web3.eth.getBalance(coreInstance.address);
+      var newEthManVal = web3.eth.getBalance(accounts[2]);
+      var ethManValDiff = oldEthManVal - newEthManVal;
+      console.log("test");
+      console.log(val);
+      assert.equal(val,0,"Balance did not transfer from");
+      //3008399999975424 is the difference after we factor in the gas gan charges
+      assert.equal(ethManValDiff,3008399999975424,"Balance did not transfer to");
+    });
+  });
 
   //Test auto-creation of drones for auction
 
