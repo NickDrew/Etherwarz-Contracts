@@ -3,7 +3,7 @@ pragma solidity ^0.4.17;
 
 import 'contracts/Tokens/ERC721.sol';
 import 'contracts/Auctions/SaleClockAuction.sol';
-import 'contracts/Core/SmartDroneMatchMaking.sol';
+import 'contracts/Core/SmartDroneMatchmaking.sol';
 import 'contracts/RoleManagement/EtherWarzRoleManagement.sol';
 
 
@@ -42,11 +42,11 @@ contract SmartDroneCore is SmartDroneMatchMaking {
 
     ///@dev Reject all Ether from  being sent here, unless it's from one of
     // our designated contracts
-    function() external payable {
+    /*function() external payable {
         require(
             msg.sender == address(saleAuction)
         );
-    }
+    }*/
 
     /// @notice Returns all the relevant information about a specific Smart Drone.
     /// @param _id The ID of the Drone of interest.
@@ -66,12 +66,14 @@ contract SmartDroneCore is SmartDroneMatchMaking {
     /// newContractAddress set either, because then the contract was upgraded.
     /// @notice This is public rather than external so we can call super.unpause
     /// without using an expensive CALL.
-    function unpause() public onlySecManager whenPaused {
+    function unpauseCore() public onlySecManager whenPaused {
         require(saleAuction != address(0));
+        require(matchMaker != address(0));
+        require(warResolution != address(0));
+        require(manufacturingAddress != address(0));
         require(newContractAddress == address(0));
-
         //Actually unpause the contract.
-        super.unpause();
+        unpause();
     }
 
     // @dev Allows the Ethereum manager to capture the balance available to the contract.

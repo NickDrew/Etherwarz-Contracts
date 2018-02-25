@@ -16,7 +16,7 @@ contract SmartDroneMatchMaking is SmartDroneWar {
 
     ///@dev Update the address of the aMAtchMaker contract. Can only be called by the Contract Manager.
     ///@param _address An address of a aIScience contract instance to be used from this point forward.
-    function setMatchMaker(address _address) external onlyConManager {
+    function setMatchmakerAddress(address _address) external onlyConManager {
 
         MatchMaker candidateContract = MatchMaker(_address);
 
@@ -32,19 +32,20 @@ contract SmartDroneMatchMaking is SmartDroneWar {
     {
         uint8 winner;
         uint16 primeAtt;
+        uint64 looserAI;
         address winnerAdd;
         address looserAdd;
-        (winner,primeAtt)= warResolution.War(smartDrones[_makerTokenId].sourceAI,smartDrones[_makerTokenId].lineId,smartDrones[_takerTokenId].sourceAI,smartDrones[_takerTokenId].lineId,_matchDetails);
+        (winner,primeAtt,looserAI)= warResolution.War(smartDrones[_makerTokenId].sourceAI,smartDrones[_makerTokenId].lineId,smartDrones[_takerTokenId].sourceAI,smartDrones[_takerTokenId].lineId,_matchDetails);
 
         if(winner==1)
         {
-            smartDrones[_takerTokenId].sourceAI = aIScience.learnFromLoss(smartDrones[_takerTokenId].sourceAI, primeAtt);
+            smartDrones[_takerTokenId].sourceAI = looserAI;
             winnerAdd = droneIndexToOwner[_makerTokenId];
             looserAdd = droneIndexToOwner[_takerTokenId];
         }
         else
         {
-            smartDrones[_makerTokenId].sourceAI = aIScience.learnFromLoss(smartDrones[_makerTokenId].sourceAI, primeAtt);
+            smartDrones[_makerTokenId].sourceAI = looserAI;
             winnerAdd = droneIndexToOwner[_takerTokenId];
             looserAdd = droneIndexToOwner[_makerTokenId];
         }
