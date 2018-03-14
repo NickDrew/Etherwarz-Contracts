@@ -25,6 +25,7 @@ contract('SmartDroneCore', function(accounts) {
   var auctionEvents;
   var warResEvents;
   var aiSciEvents;
+  var manEvents;
   //Setup the core contract and managers
   it("...should set the EthManager.", function() {
     return SmartDroneCore.new().then(function(instance) {
@@ -62,11 +63,11 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Auction contract.", function() {
        return SaleClockAuction.new(coreInstance.address,9000,{from: accounts[0]}).then(function(insta){
         saleInstance = insta;
-        /*auctionEvents = saleInstance.allEvents(function(error, log){
+        auctionEvents = saleInstance.allEvents(function(error, log){
           if (!error)
             console.log(log.event);
           console.log(log.args);
-        });*/
+        });
          coreInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]}).then(function(){
           return coreInstance.saleAuction.call().then(function(contra){
             return saleInstance.nonFungibleContract.call().then(function(conFun){
@@ -116,6 +117,12 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the Manufacturing contract.", function() {
     return Manufacturing.new(coreInstance.address,{from: accounts[0]}).then(function(manInst){
       manufacturingInstance = manInst;
+      manEvents = manInst.allEvents(function(error, log){
+          if (!error)
+            console.log(log.event);
+            console.log(log.args);
+        });
+      manufacturingInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]});
       coreInstance.setManufacturingAddress(manufacturingInstance.address,{from: accounts[0]}).then(function(){
        return coreInstance.manufacturingAddress.call().then(function(contra){
          assert.equal(contra,manufacturingInstance.address, "Manufacturing contract not set");
@@ -307,16 +314,12 @@ contract('SmartDroneCore', function(accounts) {
 
   //Extract our cut to the ethManager accounts[2]
   it("...should transfer the core balance", function(){
-    console.log(web3.eth.getBalance(coreInstance.address));
     var oldEthManVal = web3.eth.getBalance(accounts[2]);
-    console.log(oldEthManVal);
     //Ensure the core value is sent to the ethManager account.
     return coreInstance.withdrawBalance({from: accounts[2]}).then(function(){
       var val = web3.eth.getBalance(coreInstance.address);
       var newEthManVal = web3.eth.getBalance(accounts[2]);
       var ethManValDiff = oldEthManVal - newEthManVal;
-      console.log("test");
-      console.log(val);
       assert.equal(val,0,"Balance did not transfer from");
       //3008399999975424 is the difference after we factor in the gas gan charges
       assert.equal(ethManValDiff,3008399999975424,"Balance did not transfer to");
@@ -324,14 +327,14 @@ contract('SmartDroneCore', function(accounts) {
   });
 
   //Test auto-creation of drones for auction
-  if("...should create a drone and put it on auction", function(){
+  it("...should create a drone and put it on auction", function(){
       return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
-        return saleInstance.getAuction(0).then(function(auctionInst0) {
-          //assert.equal(1,1,"Not a real test");
-          assert.equal(auctionInst0[0],coreInstance.address, "Seller not correct");
-          assert.equal(auctionInst0[1],10000, "Starting Price not set correctly");
-          assert.equal(auctionInst0[2],8000, "Ending Price not set correctly");
-          assert.equal(auctionInst0[3],3600, "Duration not set correctly");
+        //assert.equal(1,1,"Not a real test");
+        return saleInstance.getAuction(2).then(function(auctionInst1) {
+          assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+          assert.equal(auctionInst1[1],10000000000000000, "Starting Price not set correctly");
+          assert.equal(auctionInst1[2],0, "Ending Price not set correctly");
+          assert.equal(auctionInst1[3],86400, "Duration not set correctly");
         });
     });
   });
