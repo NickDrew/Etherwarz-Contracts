@@ -27,6 +27,15 @@ contract Manufacturing is Pausable, ManufacturingInterface {
       smartDroneContract.constructDrone(_sourceAI, _lineId , _owner);
   }
 
+  function manufactureSaleDrone(uint64 _sourceAI, uint128 _lineID) external onlyOwner{
+      uint256 auctionPrice = _computeNextAuctionPrice();
+      if(auctionPrice<MANLINE_STARTING_PRICE)
+      {
+         auctionPrice= MANLINE_STARTING_PRICE;
+      }
+      smartDroneContract.createSmartDroneAuction(_sourceAI,_lineID,auctionPrice,MANLINE_AUCTION_DURATION);
+  }
+
   function _computeNextAuctionPrice() internal view returns(uint256) {
         uint256 avePrice = saleAuction.averageManufacturingSalePrice();
 

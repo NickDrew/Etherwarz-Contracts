@@ -79,8 +79,6 @@ contract('SmartDroneCore', function(accounts) {
       });
     });
  
-  
-
   it("...should set the Matchmaking contract.", function() {
       return  Matchmaker.new(coreInstance.address,9000,{from: accounts[0]}).then(function(retInst){
         matchMakerInstance = retInst;
@@ -326,7 +324,17 @@ contract('SmartDroneCore', function(accounts) {
   });
 
   //Test auto-creation of drones for auction
-
+  if("...should create a drone and put it on auction", function(){
+      return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+        return saleInstance.getAuction(0).then(function(auctionInst0) {
+          //assert.equal(1,1,"Not a real test");
+          assert.equal(auctionInst0[0],coreInstance.address, "Seller not correct");
+          assert.equal(auctionInst0[1],10000, "Starting Price not set correctly");
+          assert.equal(auctionInst0[2],8000, "Ending Price not set correctly");
+          assert.equal(auctionInst0[3],3600, "Duration not set correctly");
+        });
+    });
+  });
   //Bid on drones
 
   //Re-test auto-creation of drones for auction
