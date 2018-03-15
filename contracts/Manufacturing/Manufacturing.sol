@@ -12,9 +12,12 @@ contract Manufacturing is Pausable, ManufacturingInterface {
     //Constants for manufacturing line auctions
     uint256 public constant MANLINE_STARTING_PRICE = 10 finney;
     uint256 public constant MANLINE_AUCTION_DURATION = 1 days;
+    uint64 public constant BASIC_AI = 2525252525257550;
     SaleClockAuction public saleAuction;
     SmartDroneMinting public smartDroneContract;
     
+    // Storage of pre-created lineIds.
+    mapping (uint256=> uint128) standardLineIDs;
 
   function Manufacturing( address _smartDroneAddress ) public {
         
@@ -29,11 +32,14 @@ contract Manufacturing is Pausable, ManufacturingInterface {
 
   function manufactureSaleDrone(uint64 _sourceAI, uint128 _lineID) external onlyOwner{
       uint256 auctionPrice = _computeNextAuctionPrice();
-      if(auctionPrice<MANLINE_STARTING_PRICE)
-      {
-         auctionPrice= MANLINE_STARTING_PRICE;
-      }
       smartDroneContract.createSmartDroneAuction(_sourceAI,_lineID,auctionPrice,MANLINE_AUCTION_DURATION);
+  }
+
+  function manufactureStandardDrone (uint256 lineIDNo) external payable{
+      uint128 lineID = standardLineIDs[lineIDNo];
+      require(msg.value >= MANLINE_STARTING_PRICE);
+      
+      smartDroneContract.constructDrone(BASIC_AI, lineID , msg.sender);  
   }
 
   function _computeNextAuctionPrice() internal view returns(uint256) {
@@ -60,5 +66,27 @@ contract Manufacturing is Pausable, ManufacturingInterface {
 
         //Set the new contract address
         saleAuction = candidateContract;
+    }
+
+
+    function makeStandardLineID(uint256 _lineIDNo, uint128 _lineIDDetails) external onlyOwner
+    {
+        standardLineIDs[_lineIDNo] = _lineIDDetails;
+    }
+
+    function getStandardLineID(uint256 _lineIDNo) external view returns(uint128)
+    {
+       return standardLineIDs[_lineIDNo];
+    }
+
+    function withdrawBalance() external {
+        address nftAddress = address(smartDroneContract);
+        require(
+            msg.sender == owner ||
+            msg.sender == nftAddress
+        );
+        // We are using this boolean method to make sure that even if one fails it will still work
+        bool res = nftAddress.send(this.balance);
+        res = res; //To stop warnings about unused variables in some IDE's.
     }
 }
