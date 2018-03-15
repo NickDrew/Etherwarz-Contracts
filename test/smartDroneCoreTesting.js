@@ -493,7 +493,7 @@ contract('SmartDroneCore', function(accounts) {
       assert.equal(increased,10000000000000000,"Balance did not transfer");
     });
     
-});
+  });
 
 
 });
