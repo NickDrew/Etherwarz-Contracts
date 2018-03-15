@@ -5,21 +5,25 @@ import "contracts/AIScience/AIScience.sol";
 
 /// @title No, you don't get to see this :P
 contract WarResolution is WarInterface {
-    
-    function War(uint64 _p1AI, uint128 _p1Line, uint64 _p2AI, uint128 _p2Line, uint32 _enviroment) external view returns(uint8 winner, uint16 primeAtt, uint64 newAI) {
+   
+    function War(uint64 _p1AI, uint128 _p1Line, uint64 _p2AI, uint128 _p2Line, uint32 _enviroment) external returns(uint8, uint16, uint64) {
+       uint8 winner;
+       uint16 primeAtt;
+       uint64 newAI;
+       primeAtt = uint16(extract32(_enviroment,2)*2);
        
-        if(scoreCalc(_p1AI,_p1Line,_enviroment) > scoreCalc(_p2AI,_p2Line,_enviroment))
-        {
+       if(scoreCalc(_p1AI,_p1Line,_enviroment) > scoreCalc(_p2AI,_p2Line,_enviroment))
+       {
             winner=1;
             newAI = aIScience.learnFromLoss(_p2AI, primeAtt);
-        }
-        else
-        {
+       }
+       else
+       {
             winner=2;
             newAI = aIScience.learnFromLoss(_p1AI, primeAtt);
-        }
+       }
         
-        primeAtt = uint16(extract32(_enviroment,2)*2);
+        return(winner,primeAtt,newAI);
     }
     
     function scoreCalc(uint64 _AI, uint128 _Line, uint32 _enviroment) internal pure returns(uint32)

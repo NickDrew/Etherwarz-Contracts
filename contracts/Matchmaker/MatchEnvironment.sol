@@ -8,8 +8,6 @@ import 'contracts/Matchmaker/MatchEnvironmentInterface.sol';
 /// @dev Contains models, variables and internal methods for the matchmaker.
 contract MatchEnvironment is  MatchEnvironmentInterface, Ownable
 {
-    event Test(bool);
-    event Test(address);
     function MatchEnvironment(address _nftAddress) public {
        
         ERC721Match candidateContract = ERC721Match(_nftAddress);
@@ -30,7 +28,7 @@ contract MatchEnvironment is  MatchEnvironmentInterface, Ownable
     // Reference to contract tracking NFT ownership
     ERC721Match public matchableNonFungibleContract;
 
-    // Map from Makers token ID to their corresponding match.
+    // Storage of pre-created environments.
     mapping (uint256=> uint32) envDetailOptions;
 
     /// @dev Returns true if the claimant owns the token.

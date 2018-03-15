@@ -80,4 +80,6 @@ contract SmartDroneCore is SmartDroneMatchMaking {
     function withdrawBalance() external onlyEthManager {
         ethManagerAddress.send(this.balance);
     }
+
+    function() public payable { }
 }

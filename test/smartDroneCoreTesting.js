@@ -23,19 +23,23 @@ contract('SmartDroneCore', function(accounts) {
   var matchEnvironmentInstance;
   var coreEvents;
   var auctionEvents;
+  var warResEvents;
+  var aiSciEvents;
+  var manEvents;
   //Setup the core contract and managers
   it("...should set the EthManager.", function() {
     return SmartDroneCore.new().then(function(instance) {
       coreInstance = instance;
      coreEvents = coreInstance.allEvents(function(error, log){
         if (!error)
-          console.log(log);
+          console.log(log.event);
+          console.log(log.args);
       });
-      return coreInstance.setEthManager(accounts[0], {from: accounts[0]});
+      return coreInstance.setEthManager(accounts[2], {from: accounts[0]});
     }).then(function() {
       return coreInstance.ethManagerAddress.call();
     }).then(function(ethAddress) {
-      assert.equal(ethAddress, accounts[0], "The account was not set.");
+      assert.equal(ethAddress, accounts[2], "The account was not set.");
     });
   });
 
@@ -59,10 +63,11 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Auction contract.", function() {
        return SaleClockAuction.new(coreInstance.address,9000,{from: accounts[0]}).then(function(insta){
         saleInstance = insta;
-        /*auctionEvents = saleInstance.allEvents(function(error, log){
+        auctionEvents = saleInstance.allEvents(function(error, log){
           if (!error)
-            console.log(log);
-        });*/
+            console.log(log.event);
+          console.log(log.args);
+        });
          coreInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]}).then(function(){
           return coreInstance.saleAuction.call().then(function(contra){
             return saleInstance.nonFungibleContract.call().then(function(conFun){
@@ -75,14 +80,13 @@ contract('SmartDroneCore', function(accounts) {
       });
     });
  
-  
-
   it("...should set the Matchmaking contract.", function() {
       return  Matchmaker.new(coreInstance.address,9000,{from: accounts[0]}).then(function(retInst){
         matchMakerInstance = retInst;
         matchMakerEvents = matchMakerInstance.allEvents(function(error, log){
           if (!error)
-            console.log(log);
+          console.log(log.event);
+          console.log(log.args);
         });
         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.matchMaker.call().then(function(contra){
@@ -97,6 +101,11 @@ contract('SmartDroneCore', function(accounts) {
     it("...should set the War Resolution contract.", function() {
       return WarResolution.deployed().then(function(warinst){
         warResolutionInstance = warinst;
+       /* warResEvents = warinst.allEvents(function(error, log){
+          if (!error)
+            console.log(log.event);
+            console.log(log.args);
+        });*/
         coreInstance.setWarAddress(warResolutionInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.warResolution.call().then(function(contra){
            assert.equal(contra,warResolutionInstance.address, "War resolution contract not set");
@@ -108,6 +117,12 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the Manufacturing contract.", function() {
     return Manufacturing.new(coreInstance.address,{from: accounts[0]}).then(function(manInst){
       manufacturingInstance = manInst;
+      manEvents = manInst.allEvents(function(error, log){
+          if (!error)
+            console.log(log.event);
+            console.log(log.args);
+        });
+      manufacturingInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]});
       coreInstance.setManufacturingAddress(manufacturingInstance.address,{from: accounts[0]}).then(function(){
        return coreInstance.manufacturingAddress.call().then(function(contra){
          assert.equal(contra,manufacturingInstance.address, "Manufacturing contract not set");
@@ -120,6 +135,11 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the aiScience contract.", function() {
     return AIScience.new({from: accounts[0]}).then(function(aiInst){
       aiScienceInstance = aiInst;
+     /* aiSciEvents = aiInst.allEvents(function(error, log){
+        if (!error)
+          console.log(log.event);
+          console.log(log.args);
+      });*/
       warResolutionInstance.setaIScienceAddress(aiScienceInstance.address,{from: accounts[0]}).then(function(){
        return warResolutionInstance.aIScience.call().then(function(contra){
          assert.equal(contra,aiScienceInstance.address, "AIScience contract not set");
@@ -133,7 +153,8 @@ contract('SmartDroneCore', function(accounts) {
       matchEnvironmentInstance = envInst;
       /*matchEnvEvents = matchEnvironmentInstance.allEvents(function(error, log){
         if (!error)
-          console.log(log);
+          console.log(log.event);
+          console.log(log.args);
       });*/
       matchMakerInstance.setMatchEnvironmentAddress(matchEnvironmentInstance.address,{from: accounts[0]}).then(function(){
        return matchMakerInstance.enviroAddress.call().then(function(contra){
@@ -235,12 +256,12 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
- /* //Make a match
+  //Make a match
   //Initialise an environment
   it("...should create an environment", function(){
-    return matchEnvironmentInstance.makeEnvironment(0,10102020,{from: accounts[0]}).then(function(){
+    return matchEnvironmentInstance.makeEnvironment(0,10102050,{from: accounts[0]}).then(function(){
       return matchEnvironmentInstance.getEnvironment(0,{from: accounts[0]}).then(function(environ0){
-        assert.equal(environ0,10102020,"Environment not set");
+        assert.equal(environ0,10102050,"Environment not set");
       });
     });
   });
@@ -260,27 +281,219 @@ contract('SmartDroneCore', function(accounts) {
   it("...should take a match", function(){
     return matchMakerInstance.takeMatch(1,0,{from: accounts[1], to: matchMakerInstance.address, value: 10000}).then(function(){
         //Check winner
-        return coreInstance.getDrone(0,{from: accounts[0]}).then(function(drone0){
-          console.log(drone0);
-          assert.equal(1,1,"Fake Test");
+        return coreInstance.getDrone(0,{from: accounts[0]}).then(function(drone1){
+          assert.equal(drone1[3],1,"Winner did not accumulate a victory");
         });       
     });
-  });*/
+  });
   
-  
-
-  //Ensure the looser has learned from the fight
+  it("...should learn from its loss", function(){
+    //Ensure the looser has learned from the fight
+    return coreInstance.getDrone(1,{from: accounts[0]}).then(function(drone1){
+      assert.equal(drone1[0],2525252625259040,"Looser did not learn");
+    });
+  });
 
   //Transfer our cut
+    //Activate bid extraction
+    it("...should transfer the bid balance", function(){
+      //Ensure our cut from the sale has been transfered to core.
+      return coreInstance.withdrawAuctionBalances({from: accounts[0]}).then(function(){
+        var val = web3.eth.getBalance(coreInstance.address);
+        assert.equal(val,9000,"Balance did not transfer");
+      });
+    });
+    //Activate matchmaking extraction
+    it("...should transfer the matchmaking balance", function(){
+      //Ensure our cut from the sale has been transfered to core.
+      return matchMakerInstance.withdrawBalance({from: accounts[0]}).then(function(){
+        var val = web3.eth.getBalance(coreInstance.address);
+        assert.equal(val,27000,"Balance did not transfer");
+      });
+    });
 
-  //Test auto-creation of drones for auction
+  //Extract our cut to the ethManager accounts[2]
+  it("...should transfer the core balance", function(){
+    var oldEthManVal = web3.eth.getBalance(accounts[2]);
+    //Ensure the core value is sent to the ethManager account.
+    return coreInstance.withdrawBalance({from: accounts[2]}).then(function(){
+      var val = web3.eth.getBalance(coreInstance.address);
+      var newEthManVal = web3.eth.getBalance(accounts[2]);
+      var ethManValDiff = oldEthManVal - newEthManVal;
+      assert.equal(val,0,"Balance did not transfer from");
+      //3008399999975424 is the difference after we factor in the gas gan charges
+      assert.equal(ethManValDiff,3008399999975424,"Balance did not transfer to");
+    });
+  });
 
-  //Bid on drones
+  //Test auto-creation of drones for auction 1
+  it("...should create a drone and put it on auction", function(){
+      return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+        return saleInstance.getAuction(2).then(function(auctionInst1) {
+          assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+          assert.equal(auctionInst1[1],10000000000000000, "Starting Price not set correctly");
+          assert.equal(auctionInst1[2],0, "Ending Price not set correctly");
+          assert.equal(auctionInst1[3],86400, "Duration not set correctly");
+        });
+    });
+  });
 
-  //Re-test auto-creation of drones for auction
+  //Test auto-creation of drones for auction 2
+  it("...should create a drone and put it on auction", function(){
+    return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+      return saleInstance.getAuction(3).then(function(auctionInst1) {
+        assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+        assert.equal(auctionInst1[1],10000000000000000, "Starting Price not set correctly");
+        assert.equal(auctionInst1[2],0, "Ending Price not set correctly");
+        assert.equal(auctionInst1[3],86400, "Duration not set correctly");
+      });
+    });
+  });
 
-  //Make sure their prices have updated based on previous bids
+  //Test auto-creation of drones for auction 3
+  it("...should create a drone and put it on auction", function(){
+    return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+      return saleInstance.getAuction(4).then(function(auctionInst1) {
+        assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+        assert.equal(auctionInst1[1],10000000000000000, "Starting Price not set correctly");
+        assert.equal(auctionInst1[2],0, "Ending Price not set correctly");
+        assert.equal(auctionInst1[3],86400, "Duration not set correctly");
+      });
+    });
+  });
+
+  //Test auto-creation of drones for auction 4
+  it("...should create a drone and put it on auction", function(){
+    return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+      return saleInstance.getAuction(5).then(function(auctionInst1) {
+        assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+        assert.equal(auctionInst1[1],10000000000000000, "Starting Price not set correctly");
+        assert.equal(auctionInst1[2],0, "Ending Price not set correctly");
+        assert.equal(auctionInst1[3],86400, "Duration not set correctly");
+      });
+    });
+  });
+
+  //Test auto-creation of drones for auction 5
+  it("...should create a drone and put it on auction", function(){
+    return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+      return saleInstance.getAuction(6).then(function(auctionInst1) {
+        assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+        assert.equal(auctionInst1[1],10000000000000000, "Starting Price not set correctly");
+        assert.equal(auctionInst1[2],0, "Ending Price not set correctly");
+        assert.equal(auctionInst1[3],86400, "Duration not set correctly");
+      });
+    });
+  });
+
+  //Bid on sale drones 1
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(1,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        assert.equal(balance3,1, "Drone has not transferred ownership");
+      });
+    });
+  });
+
+  //Bid on sale drones 2
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(2,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        assert.equal(balance3,2, "Drone has not transferred ownership");
+      });
+    });
+  });
+
+  //Bid on sale drones 3
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(3,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        assert.equal(balance3,3, "Drone has not transferred ownership");
+      });
+    });
+  });
+
+  //Bid on sale drones 4
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(4,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        assert.equal(balance3,4, "Drone has not transferred ownership");
+      });
+    });
+  });
+
+  //Bid on sale drones 5
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(5,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        assert.equal(balance3,5, "Drone has not transferred ownership");
+      });
+    });
+  });
+
+  
+
+  //Re-sell drone at higher value to push up average. This is the SEVENTH AUCTION in the tests (just to keep count)
+  it("...should create & bid drone auction.", function(){
+    return coreInstance.createSaleAuction(5,1000000000000000000,800000000000000000,86400,{from: accounts[0]}).then(function(){
+      return saleInstance.bid(5,{from: accounts[6], to: saleInstance.address, value: 1000000000000000000}).then(function(){
+        return coreInstance.balanceOf(accounts[6]).then(function(balance3) {
+          assert.equal(balance3,1, "Drone has not transferred ownership");
+        });
+      });
+    });
+  });
+
+  //Re-test auto-creation of drones for auction & Make sure their prices have updated based on previous bids
+  it("...should create a drone and put it on auction", function(){
+    return manufacturingInstance.manufactureSaleDrone(2525252525257550,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+      return saleInstance.getAuction(7).then(function(auctionInst1) {
+        assert.equal(auctionInst1[0],coreInstance.address, "Seller not correct");
+        var priceIncrease = (auctionInst1[1]>10000000000000000);
+        assert.equal(priceIncrease,true, "Starting Price not set correctly");
+      });
+    });
+  });
 
   //Test drone manufacuring from pre-set lines.
+  //Create line
+  it("...should create a new drone line", function(){
+    return manufacturingInstance.makeStandardLineID(0,00000000000000000000000005050505,{from: accounts[0]}).then(function(){
+      return manufacturingInstance.getStandardLineID(0).then(function(lineIDinst1) {
+        assert.equal(lineIDinst1,00000000000000000000000005050505, "LineID not correct");
+      });
+    });
+  });
+
+  //Manufacture line
+  
+  it("...should create a drone and put it on auction", function(){
+    return manufacturingInstance.manufactureStandardDrone(0,{from: accounts[8], to: manufacturingInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[8]).then(function(balance8) {
+        assert.equal(balance8,1, "Drone not created");
+      });
+    });
+  });
+
+
+  //Confirm manufacturing cash
+  it("...should have been paid for the manufactured drone", function(){
+      var val = web3.eth.getBalance(manufacturingInstance.address);
+      assert.equal(val,10000000000000000,"Balance did not transfer");
+  });
+
+  //Initiate withdrawal to core contract
+  it("...should transfer the manufacturing cash to the core", function(){
+    var val1 = web3.eth.getBalance(coreInstance.address);
+    return manufacturingInstance.withdrawBalance({from: accounts[0]}).then(function() {
+      var val2 = web3.eth.getBalance(coreInstance.address);
+      console.log(val1);
+      console.log(val2);
+      var increased = val2-val1;
+      assert.equal(increased,10000000000000000,"Balance did not transfer");
+    });
+    
+  });
+
 
 });
