@@ -26,7 +26,7 @@ var MatchEnvironment = artifacts.require("MatchEnvironment");
 var MatchEnvironmentInterface = artifacts.require("MatchEnvironmentInterface");
 
 module.exports = function(deployer) {
-    deployer.deploy(MatchEnvironment);
+    deployer.deploy(MatchEnvironment,SmartDroneCore.address);
     deployer.deploy(MatchEnvironmentInterface).then(function(){
             deployer.link(MatchEnvironmentInterface,[MatchEnvironment,Matchmaker]);
             deployer.link(Ownable,MatchEnvironment);

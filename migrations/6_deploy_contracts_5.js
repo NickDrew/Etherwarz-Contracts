@@ -24,10 +24,9 @@ var AIScience = artifacts.require("AIScience");
 var ClockAuction = artifacts.require("ClockAuction");
 
 module.exports = function(deployer) {
-    deployer.deploy(Manufacturing);
+    deployer.deploy(Manufacturing, SmartDroneCore.address);
     deployer.deploy(ManufacturingInterface);
-    deployer.deploy(Matchmaker)
-    //deployer.deploy(Matchmaker,SmartDroneCore.address,9000)
+    deployer.deploy(Matchmaker, SmartDroneCore.address, 1000)
     deployer.deploy(WarResolution);
     deployer.deploy(WarInterface).then(function(){
             deployer.link(SmartDroneMinting,Manufacturing);
