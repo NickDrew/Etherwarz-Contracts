@@ -35,5 +35,6 @@ module.exports = function(deployer) {
   deployer.link(ERC721, [SmartDroneOwnership,ClockAuctionBase]);
   deployer.deploy(SmartDroneOwnership);
   deployer.deploy(ClockAuctionBase);
+  deployer.deploy(SmartDroneCore);
 
 };

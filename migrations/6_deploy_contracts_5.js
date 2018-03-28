@@ -22,33 +22,14 @@ var Manufacturing = artifacts.require("Manufacturing");
 var ManufacturingInterface = artifacts.require("ManufacturingInterface");
 var AIScience = artifacts.require("AIScience");
 var ClockAuction = artifacts.require("ClockAuction");
+var MatchEnvironment = artifacts.require("MatchEnvironment");
+var MatchEnvironmentInterface = artifacts.require("MatchEnvironmentInterface");
 
-module.exports = function(deployer) {
-    deployer.deploy(Manufacturing, SmartDroneCore.address);
-    deployer.deploy(ManufacturingInterface);
-    deployer.deploy(Matchmaker, SmartDroneCore.address, 1000)
-    deployer.deploy(WarResolution);
-    deployer.deploy(WarInterface).then(function(){
-            deployer.link(SmartDroneMinting,Manufacturing);
-            deployer.link(ManufacturingInterface,[SmartDroneMinting,Manufacturing]);
-            deployer.link(Pausable,Manufacturing);
-            deployer.link(AIScience,WarResolution);
-            deployer.link(WarResolution,SmartDroneCore);
-            deployer.link(SmartDroneBase,SmartDroneMatchMaking);
-            deployer.link(ERC721,[SmartDroneMatchMaking,ERC721Match,Matchmaker,MatchmakerBase]);
-            deployer.link(ERC721Match,[SmartDroneAuction,SmartDroneMinting,SmartDroneWar,SmartDroneCore,SmartDroneOwnership,SmartDroneMatchMaking,Matchmaker,MatchmakerBase])
-            deployer.link(SmartDroneMatchMaking,SmartDroneCore);
-            deployer.link(SmartDroneBase,SmartDroneMatchMaking);
-            deployer.link(SmartDroneAuction,SmartDroneMatchMaking);
-            deployer.link(SmartDroneMinting,SmartDroneMatchMaking);
-            deployer.link(SmartDroneOwnership,SmartDroneMatchMaking);
-            deployer.link(SmartDroneWar,SmartDroneMatchMaking);
-            deployer.link(WarInterface,WarResolution);
-            deployer.link(WarResolution,SmartDroneWar);
-            deployer.link(WarResolution,SmartDroneMatchMaking);
-            deployer.link(WarResolution,SmartDroneCore);
-            deployer.link(MatchmakerBase,[Matchmaker,SmartDroneMatchMaking,SmartDroneCore]);
-            deployer.link(Matchmaker,[SmartDroneMatchMaking,SmartDroneCore]);
-       
+module.exports = function (deployer) {
+    deployer.deploy(MatchEnvironment, SmartDroneCore.address);
+    deployer.deploy(MatchEnvironmentInterface).then(function () {
+        deployer.link(MatchEnvironmentInterface, [MatchEnvironment, Matchmaker]);
+        deployer.link(Ownable, MatchEnvironment);
+        deployer.link(Matchmaker, MatchEnvironment);
     });
 };
