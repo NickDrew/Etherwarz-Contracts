@@ -436,8 +436,8 @@ contract('SmartDroneCore', function(accounts) {
   //Re-sell drone at higher value to push up average. This is the SEVENTH AUCTION in the tests (just to keep count)
   it("...should create & bid drone auction.", function(){
     return coreInstance.createSaleAuction(5,1000000000000000000,800000000000000000,86400,{from: accounts[0]}).then(function(){
-      return saleInstance.bid(5,{from: accounts[6], to: saleInstance.address, value: 1000000000000000000}).then(function(){
-        return coreInstance.balanceOf(accounts[6]).then(function(balance3) {
+      return saleInstance.bid(5,{from: accounts[4], to: saleInstance.address, value: 1000000000000000000}).then(function(){
+        return coreInstance.balanceOf(accounts[4]).then(function(balance3) {
           assert.equal(balance3,1, "Drone has not transferred ownership");
         });
       });
@@ -468,8 +468,8 @@ contract('SmartDroneCore', function(accounts) {
   //Manufacture line
   
   it("...should create a drone and put it on auction", function(){
-    return manufacturingInstance.manufactureStandardDrone(0,{from: accounts[8], to: manufacturingInstance.address, value: 10000000000000000}).then(function(){
-      return coreInstance.balanceOf(accounts[8]).then(function(balance8) {
+    return manufacturingInstance.manufactureStandardDrone(0,{from: accounts[5], to: manufacturingInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[5]).then(function(balance8) {
         assert.equal(balance8,1, "Drone not created");
       });
     });
