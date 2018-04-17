@@ -30,11 +30,14 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the EthManager.", function() {
     return SmartDroneCore.new().then(function(instance) {
       coreInstance = instance;
+
      coreEvents = coreInstance.allEvents(function(error, log){
         if (!error)
           console.log(log.event);
           console.log(log.args);
       });
+      console.log("The core address!");
+      console.log(coreInstance.address);
       return coreInstance.setEthManager(accounts[2], {from: accounts[0]});
     }).then(function() {
       return coreInstance.ethManagerAddress.call();
@@ -68,6 +71,8 @@ contract('SmartDroneCore', function(accounts) {
             console.log(log.event);
           console.log(log.args);
         });
+        console.log("The sales address");
+        console.log(saleInstance.address);
          coreInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]}).then(function(){
           return coreInstance.saleAuction.call().then(function(contra){
             return saleInstance.nonFungibleContract.call().then(function(conFun){
@@ -122,6 +127,8 @@ contract('SmartDroneCore', function(accounts) {
             console.log(log.event);
             console.log(log.args);
         });
+        console.log("Manufacturing Address!")
+        console.log(manufacturingInstance.address);
       manufacturingInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]});
       coreInstance.setManufacturingAddress(manufacturingInstance.address,{from: accounts[0]}).then(function(){
        return coreInstance.manufacturingAddress.call().then(function(contra){
