@@ -34,6 +34,7 @@ contract MatchMaker is Pausable, MatchmakerBase {
         require(msg.sender == enviroAddress);
         require(matchableNonFungibleContract.canMatch(_tokenId));
         require(msg.value >= _matchCash);
+        matchableNonFungibleContract.intoMatch(_tokenId);
         Match memory _match = Match(
             _matcher,
             _matchCash,
@@ -51,6 +52,7 @@ contract MatchMaker is Pausable, MatchmakerBase {
         uint256 tstval = tokenIdtoMatch[_makerTokenId].matchCash;
         escrowAmount += tokenIdtoMatch[_makerTokenId].matchCash;
         _takeMatch(_makerTokenId, _takerTokenId, tokenIdtoMatch[_makerTokenId].matchCash);
+        matchableNonFungibleContract.outofMatch(_makerTokenId);
         escrowAmount -= (tstval *2);
     }
     
@@ -62,6 +64,7 @@ contract MatchMaker is Pausable, MatchmakerBase {
         address matchMaker = _match.maker;
         require(msg.sender == matchMaker);
         _cancelMatch(_tokenId);
+        matchableNonFungibleContract.outofMatch(_tokenId);
         matchMaker.transfer(matchCash);
         escrowAmount -= matchCash;
     }
@@ -74,6 +77,7 @@ contract MatchMaker is Pausable, MatchmakerBase {
         require(_isInMatch(_match));
         uint128 matchCash = _match.matchCash;
         _cancelMatch(_tokenId);
+        matchableNonFungibleContract.outofMatch(_tokenId);
         escrowAmount -= matchCash;
     }
 
