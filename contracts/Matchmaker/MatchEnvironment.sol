@@ -38,6 +38,7 @@ contract MatchEnvironment is  MatchEnvironmentInterface, Ownable
    
     function makeMatch(uint256 _tokenId, uint128 _matchCash, uint256 _envDetails) external payable {
         require(_owns(msg.sender, _tokenId));
+        require(matchableNonFungibleContract.canMatch(_tokenId));
         matchMaker.makeMatch.value(msg.value)(_tokenId,_matchCash,envDetailOptions[_envDetails],msg.sender );
     }
 

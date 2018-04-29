@@ -31,11 +31,11 @@ contract('SmartDroneCore', function(accounts) {
     return SmartDroneCore.new().then(function(instance) {
       coreInstance = instance;
 
-     coreEvents = coreInstance.allEvents(function(error, log){
+     /*coreEvents = coreInstance.allEvents(function(error, log){
         if (!error)
           console.log(log.event);
           console.log(log.args);
-      });
+      });*/
       console.log("The core address!");
       console.log(coreInstance.address);
       return coreInstance.setEthManager(accounts[2], {from: accounts[0]});
@@ -66,11 +66,11 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Auction contract.", function() {
        return SaleClockAuction.new(coreInstance.address,9000,{from: accounts[0]}).then(function(insta){
         saleInstance = insta;
-        auctionEvents = saleInstance.allEvents(function(error, log){
+        /*auctionEvents = saleInstance.allEvents(function(error, log){
           if (!error)
             console.log(log.event);
           console.log(log.args);
-        });
+        });*/
         console.log("The sales address");
         console.log(saleInstance.address);
          coreInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]}).then(function(){
@@ -88,11 +88,13 @@ contract('SmartDroneCore', function(accounts) {
   it("...should set the Matchmaking contract.", function() {
       return  Matchmaker.new(coreInstance.address,9000,{from: accounts[0]}).then(function(retInst){
         matchMakerInstance = retInst;
-        matchMakerEvents = matchMakerInstance.allEvents(function(error, log){
+        console.log("The matchmaker address!");
+        console.log(matchMakerInstance.address);
+        /*matchMakerEvents = matchMakerInstance.allEvents(function(error, log){
           if (!error)
           console.log(log.event);
           console.log(log.args);
-        });
+        });*/
         coreInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.matchMaker.call().then(function(contra){
            assert.equal(contra,matchMakerInstance.address, "Matchmaking contract not set");
@@ -111,6 +113,7 @@ contract('SmartDroneCore', function(accounts) {
             console.log(log.event);
             console.log(log.args);
         });*/
+        
         coreInstance.setWarAddress(warResolutionInstance.address,{from: accounts[0]}).then(function(){
          return coreInstance.warResolution.call().then(function(contra){
            assert.equal(contra,warResolutionInstance.address, "War resolution contract not set");
@@ -122,11 +125,11 @@ contract('SmartDroneCore', function(accounts) {
    it("...should set the Manufacturing contract.", function() {
     return Manufacturing.new(coreInstance.address,{from: accounts[0]}).then(function(manInst){
       manufacturingInstance = manInst;
-      manEvents = manInst.allEvents(function(error, log){
+      /*manEvents = manInst.allEvents(function(error, log){
           if (!error)
             console.log(log.event);
             console.log(log.args);
-        });
+        });*/
         console.log("Manufacturing Address!")
         console.log(manufacturingInstance.address);
       manufacturingInstance.setSaleAuctionAddress(saleInstance.address,{from: accounts[0]});
@@ -163,6 +166,8 @@ contract('SmartDroneCore', function(accounts) {
           console.log(log.event);
           console.log(log.args);
       });*/
+      console.log("The matchenvironment address!");
+      console.log(matchEnvironmentInstance.address);
       matchMakerInstance.setMatchEnvironmentAddress(matchEnvironmentInstance.address,{from: accounts[0]}).then(function(){
        return matchMakerInstance.enviroAddress.call().then(function(contra){
          return matchEnvironmentInstance.setMatchmakerAddress(matchMakerInstance.address,{from: accounts[0]}).then(function(){
@@ -328,7 +333,7 @@ contract('SmartDroneCore', function(accounts) {
       var newEthManVal = web3.eth.getBalance(accounts[2]);
       var ethManValDiff = oldEthManVal - newEthManVal;
       assert.equal(val,0,"Balance did not transfer from");
-      //3008399999975424 is the difference after we factor in the gas gan charges
+      //3008399999975424 is the difference after we factor in the gas gan charges at gas price 1 in gan
       assert.equal(ethManValDiff,3008399999975424,"Balance did not transfer to");
     });
   });
@@ -393,16 +398,7 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
-  //Bid on sale drones 1
-  it("...should bid on an auction.", function(){
-    return saleInstance.bid(1,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
-      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
-        assert.equal(balance3,1, "Drone has not transferred ownership");
-      });
-    });
-  });
-
-  //Bid on sale drones 2
+  //Bid on sale drones 1 (drone 2)
   it("...should bid on an auction.", function(){
     return saleInstance.bid(2,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
       return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
@@ -411,7 +407,7 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
-  //Bid on sale drones 3
+  //Bid on sale drones 2 (drone 3)
   it("...should bid on an auction.", function(){
     return saleInstance.bid(3,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
       return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
@@ -420,7 +416,7 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
-  //Bid on sale drones 4
+  //Bid on sale drones 3 (drone 4)
   it("...should bid on an auction.", function(){
     return saleInstance.bid(4,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
       return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
@@ -429,11 +425,20 @@ contract('SmartDroneCore', function(accounts) {
     });
   });
 
-  //Bid on sale drones 5
+  //Bid on sale drones 4 (drone 5)
   it("...should bid on an auction.", function(){
     return saleInstance.bid(5,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
       return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
         assert.equal(balance3,5, "Drone has not transferred ownership");
+      });
+    });
+  });
+
+  //Bid on sale drones 5 (drone 6)
+  it("...should bid on an auction.", function(){
+    return saleInstance.bid(6,{from: accounts[0], to: saleInstance.address, value: 10000000000000000}).then(function(){
+      return coreInstance.balanceOf(accounts[0]).then(function(balance3) {
+        assert.equal(balance3,6, "Drone has not transferred ownership");
       });
     });
   });

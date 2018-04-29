@@ -6,7 +6,7 @@ module.exports = {
       host: "127.0.0.1",
       port: 7545,
       network_id: "*", // Match any network id
-      from: "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+      from: "0x03D413981e4eF03264D220912d12F6d5E6ced06A",
       gas: 6700000
     },
 
@@ -32,7 +32,7 @@ module.exports = {
       from: "0x438f65476Dfed23c0621f7A3DC7740F599F59237", // default address to use for any transaction Truffle makes during migrations
       network_id: 4,
       gas: 4612388, // Gas limit used for deploys
-      gasPrice: 1000000000
+      gasPrice: 10000000000
     }
   }
 };

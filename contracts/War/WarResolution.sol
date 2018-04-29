@@ -2,9 +2,10 @@ pragma solidity ^0.4.17;
 
 import "contracts/War/WarInterface.sol";
 import "contracts/AIScience/AIScience.sol";
+import 'contracts/zeppelin/ownership/Ownable.sol';
 
 /// @title No, you don't get to see this :P
-contract WarResolution is WarInterface {
+contract WarResolution is Ownable, WarInterface {
    
     function War(uint64 _p1AI, uint128 _p1Line, uint64 _p2AI, uint128 _p2Line, uint32 _enviroment) external returns(uint8, uint16, uint64) {
        uint8 winner;
@@ -61,7 +62,7 @@ contract WarResolution is WarInterface {
 
     ///@dev Update the address of the aIScience contract. Can only be called by the Contract Manager.
     ///@param _address An address of a aIScience contract instance to be used from this point forward.
-    function setaIScienceAddress(address _address) external {
+    function setaIScienceAddress(address _address) external onlyOwner {
 
         AIScience candidateContract = AIScience(_address);
 
