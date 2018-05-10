@@ -18,6 +18,10 @@ The mechs themselves have two primary components
 Mechs battle in environments that provide bonuses to various stats drawn from the LineID and the SourceAI, using an experimental
 system of breaking down large numbers in the blockchain into smaller sub-components in a gas-efficent process.
 
+
+Development was originally performed in a private Bitbucket project, then moved here when we decided to suspend development.
+
 All credit for development goes to
--Nicholas Drew (myself)
--Joshua Cook (testing feedback)
+
+-Nicholas Drew (myself) - and the account I use in bitbucket ;)
+-Joshua Cook (testing feedback) - and the account he uses in bitbucket.
