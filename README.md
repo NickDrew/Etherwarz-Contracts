@@ -24,4 +24,5 @@ Development was originally performed in a private Bitbucket project, then moved 
 All credit for development goes to
 
 -Nicholas Drew (myself) - and the account I use in bitbucket ;)
+
 -Joshua Cook (testing feedback) - and the account he uses in bitbucket.
