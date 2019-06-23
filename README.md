@@ -2,15 +2,11 @@ Originally created as part of learning to create more complex Ethereum dapps, th
 
   
 
-The contracts here are fully functioning with no remaining detectable bugs or problems, but the game itself is not much fun 
-
-to play compared to other similar available dapp games. 
+The contracts here are fully functioning with no remaining detectable bugs or problems, but the game itself is not much fun to play compared to other similar available dapp games. 
 
   
 
-The contracts in this project have been tested on the rinkeby testnet and support a fully-functioning game that allows for 
-
-the manufacturing, auctioning, battling and training of mechs. 
+The contracts in this project have been tested on the rinkeby testnet and support a fully-functioning game that allows for the manufacturing, auctioning, battling and training of mechs. 
 
   
 
@@ -30,7 +26,6 @@ Mechs battle in environments that provide bonuses to various stats drawn from th
 Development was originally performed in a private Bitbucket project, then moved here when we decided to suspend development. 
 
   
-
 All credit for development goes to 
 
   
